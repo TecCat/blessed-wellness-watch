@@ -1,0 +1,1990 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WellnessWatch — Watch UI Mockup</title>
+<style>
+  :root {
+    --bg: #0A0A0F;
+    --surface: #12121A;
+    --card: #1A1A26;
+    --border: #2A2A3E;
+    --accent: #3382E5;
+    --purple: #7B4FCB;
+    --teal: #2FBCB2;
+    --dark-bg: #0D0D1A;
+    --text: #F2F2F7;
+    --text-2: #AEAEB2;
+    --text-3: #636366;
+    --green: #30D158;
+    --yellow: #FFD60A;
+    --red: #FF453A;
+    --orange: #FF9F0A;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, "SF Pro Display", "Helvetica Neue", Arial, sans-serif;
+    min-height: 100vh;
+  }
+
+  /* ── Header ── */
+  .page-header {
+    padding: 48px 60px 32px;
+    border-bottom: 1px solid var(--border);
+  }
+  .page-header h1 {
+    font-size: 32px;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+  }
+  .page-header h1 span { color: var(--accent); }
+  .page-header p {
+    margin-top: 8px;
+    color: var(--text-2);
+    font-size: 15px;
+  }
+  .badge {
+    display: inline-block;
+    margin-top: 12px;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    background: rgba(51,130,229,0.15);
+    color: var(--accent);
+    border: 1px solid rgba(51,130,229,0.3);
+  }
+
+  /* ── Nav tabs ── */
+  .flow-nav {
+    display: flex;
+    gap: 0;
+    padding: 0 60px;
+    border-bottom: 1px solid var(--border);
+    overflow-x: auto;
+  }
+  .flow-tab {
+    padding: 16px 24px;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-3);
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    white-space: nowrap;
+    transition: all .2s;
+    background: none;
+    border-top: none;
+    border-left: none;
+    border-right: none;
+    font-family: inherit;
+  }
+  .flow-tab:hover { color: var(--text-2); }
+  .flow-tab.active { color: var(--text); border-bottom-color: var(--accent); }
+  .flow-tab .dot {
+    display: inline-block;
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    margin-right: 8px;
+  }
+
+  /* ── Flow sections ── */
+  .flow-section { display: none; padding: 48px 60px 80px; }
+  .flow-section.active { display: block; }
+
+  .flow-title {
+    font-size: 22px;
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+  .flow-desc {
+    color: var(--text-2);
+    font-size: 14px;
+    margin-bottom: 40px;
+    max-width: 720px;
+    line-height: 1.6;
+  }
+
+  /* ── Screen row ── */
+  .screen-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 0;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    padding-bottom: 16px;
+  }
+
+  /* ── Arrow ── */
+  .arrow {
+    display: flex;
+    align-items: center;
+    padding: 0 8px;
+    margin-top: 100px;
+    flex-shrink: 0;
+  }
+  .arrow svg { color: var(--text-3); }
+  .arrow-label {
+    position: absolute;
+    font-size: 10px;
+    color: var(--text-3);
+    white-space: nowrap;
+    transform: translateY(20px);
+  }
+
+  .branch-container {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    flex-shrink: 0;
+  }
+  .branch-label {
+    font-size: 11px;
+    color: var(--text-3);
+    text-align: center;
+    margin-bottom: 4px;
+    font-weight: 500;
+  }
+  .branch-yes { color: var(--green); }
+  .branch-no  { color: var(--red); }
+
+  /* ── Watch body ── */
+  .watch-wrap {
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+  }
+  .watch-body {
+    width: 176px;
+    height: 216px;
+    background: #1C1C1E;
+    border-radius: 52px;
+    position: relative;
+    box-shadow:
+      0 0 0 2px #3A3A3C,
+      0 0 0 4px #1C1C1E,
+      0 24px 60px rgba(0,0,0,0.7);
+  }
+  /* Crown */
+  .watch-body::before {
+    content: '';
+    position: absolute;
+    right: -10px;
+    top: 60px;
+    width: 10px;
+    height: 38px;
+    background: linear-gradient(to right, #2C2C2E, #3A3A3C);
+    border-radius: 3px 5px 5px 3px;
+  }
+  /* Side button */
+  .watch-body::after {
+    content: '';
+    position: absolute;
+    right: -10px;
+    top: 110px;
+    width: 10px;
+    height: 22px;
+    background: linear-gradient(to right, #2C2C2E, #3A3A3C);
+    border-radius: 3px 5px 5px 3px;
+  }
+
+  /* Screen */
+  .watch-screen {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    right: 10px;
+    bottom: 10px;
+    background: var(--dark-bg);
+    border-radius: 42px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  /* Status bar */
+  .status-bar {
+    width: 100%;
+    padding: 8px 16px 4px;
+    display: flex;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .status-time {
+    font-size: 11px;
+    font-weight: 600;
+    color: rgba(255,255,255,0.5);
+    letter-spacing: 0.3px;
+  }
+
+  /* Screen label */
+  .screen-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-2);
+    text-align: center;
+    letter-spacing: 0.2px;
+  }
+  .screen-sublabel {
+    font-size: 11px;
+    color: var(--text-3);
+    text-align: center;
+    margin-top: 2px;
+  }
+
+  /* ─── Screen contents ─── */
+
+  /* Onboarding */
+  .onboarding-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 4px 14px 12px;
+    gap: 8px;
+  }
+  .app-icon {
+    width: 44px; height: 44px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #3382E5, #7B4FCB);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px;
+  }
+  .onboarding-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: white;
+    text-align: center;
+  }
+  .onboarding-sub {
+    font-size: 10px;
+    color: rgba(255,255,255,0.55);
+    text-align: center;
+    line-height: 1.4;
+  }
+  .btn-primary {
+    margin-top: 4px;
+    padding: 7px 20px;
+    background: var(--accent);
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    color: white;
+  }
+
+  /* Home screen */
+  .home-content {
+    flex: 1;
+    width: 100%;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    padding: 0 10px 10px;
+  }
+  .stress-card {
+    background: rgba(51,130,229,0.15);
+    border: 1px solid rgba(51,130,229,0.25);
+    border-radius: 12px;
+    padding: 6px 10px;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .stress-emoji { font-size: 14px; }
+  .stress-info { }
+  .stress-level { font-size: 10px; font-weight: 700; color: white; }
+  .stress-data { font-size: 9px; color: rgba(255,255,255,0.5); margin-top: 1px; }
+
+  .mode-list { display: flex; flex-direction: column; gap: 4px; }
+  .mode-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: rgba(255,255,255,0.06);
+    border-radius: 10px;
+    padding: 6px 10px;
+  }
+  .mode-name { font-size: 10px; font-weight: 600; color: white; }
+  .mode-dur  { font-size: 9px; color: rgba(255,255,255,0.4); }
+  .mode-arrow { font-size: 10px; color: rgba(255,255,255,0.3); }
+
+  /* Section label inside screen */
+  .screen-section-label {
+    font-size: 10px;
+    font-weight: 700;
+    color: rgba(255,255,255,0.35);
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    margin-bottom: 5px;
+    padding: 0 2px;
+  }
+
+  /* Breathing view */
+  .breathing-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 4px 10px 12px;
+    position: relative;
+  }
+  .breath-circle-wrap {
+    position: relative;
+    width: 96px;
+    height: 96px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 10px;
+  }
+  .breath-circle {
+    width: 96px;
+    height: 96px;
+    border-radius: 50%;
+    position: absolute;
+    top: 0; left: 0;
+  }
+  .breath-circle.inhale {
+    background: radial-gradient(circle at 40% 35%, rgba(100,165,255,0.9), rgba(51,130,229,0.7));
+    transform: scale(1.0);
+    animation: breatheIn 4s ease-in-out infinite alternate;
+  }
+  .breath-circle.hold {
+    background: radial-gradient(circle at 40% 35%, rgba(160,130,255,0.9), rgba(123,79,203,0.7));
+    transform: scale(1.0);
+  }
+  .breath-circle.exhale {
+    background: radial-gradient(circle at 40% 35%, rgba(70,220,210,0.9), rgba(47,188,178,0.7));
+    transform: scale(0.62);
+    animation: breatheOut 6s ease-in-out infinite alternate;
+  }
+
+  @keyframes breatheIn {
+    0%   { transform: scale(0.62); }
+    100% { transform: scale(1.0); }
+  }
+  @keyframes breatheOut {
+    0%   { transform: scale(1.0); }
+    100% { transform: scale(0.62); }
+  }
+
+  .breath-count {
+    font-size: 26px;
+    font-weight: 200;
+    color: white;
+    font-variant-numeric: tabular-nums;
+    z-index: 2;
+    position: relative;
+    text-shadow: 0 1px 4px rgba(0,0,0,0.4);
+  }
+  .breath-phase {
+    font-size: 12px;
+    font-weight: 600;
+    color: rgba(255,255,255,0.85);
+    margin-bottom: 8px;
+    letter-spacing: 0.5px;
+  }
+  .progress-bar-wrap {
+    width: 96px;
+    height: 3px;
+    background: rgba(255,255,255,0.12);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  .progress-bar-fill {
+    height: 100%;
+    border-radius: 2px;
+  }
+  .progress-bar-fill.blue  { background: var(--accent); }
+  .progress-bar-fill.teal  { background: var(--teal); }
+  .progress-bar-fill.purple { background: var(--purple); }
+
+  .cycle-count {
+    font-size: 9px;
+    color: rgba(255,255,255,0.35);
+    margin-top: 5px;
+  }
+
+  /* Confirm dialog */
+  .confirm-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 8px 12px;
+    gap: 8px;
+  }
+  .confirm-title {
+    font-size: 12px;
+    font-weight: 700;
+    color: white;
+    text-align: center;
+  }
+  .confirm-sub {
+    font-size: 10px;
+    color: rgba(255,255,255,0.5);
+    text-align: center;
+  }
+  .confirm-btns {
+    display: flex;
+    gap: 6px;
+    margin-top: 4px;
+  }
+  .btn-sm {
+    padding: 5px 12px;
+    border-radius: 16px;
+    font-size: 11px;
+    font-weight: 600;
+  }
+  .btn-sm.continue { background: rgba(255,255,255,0.12); color: white; }
+  .btn-sm.end      { background: var(--red); color: white; }
+
+  /* Result view */
+  .result-content {
+    flex: 1;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    padding: 0 12px 12px;
+    gap: 5px;
+  }
+  .result-header {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 4px;
+  }
+  .result-check {
+    width: 20px; height: 20px;
+    border-radius: 50%;
+    background: var(--green);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 700;
+    color: #000;
+  }
+  .result-title { font-size: 13px; font-weight: 700; color: white; }
+
+  .result-metric {
+    background: rgba(255,255,255,0.07);
+    border-radius: 10px;
+    padding: 6px 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .metric-label { font-size: 9px; color: rgba(255,255,255,0.4); }
+  .metric-value { font-size: 11px; font-weight: 600; color: white; }
+  .metric-change { font-size: 9px; color: var(--green); margin-top: 1px; }
+  .metric-change.down { color: var(--accent); }
+
+  .result-btns { display: flex; flex-direction: column; gap: 5px; margin-top: 4px; }
+  .btn-result-ai {
+    padding: 7px;
+    background: rgba(51,130,229,0.2);
+    border: 1px solid rgba(51,130,229,0.4);
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--accent);
+    text-align: center;
+  }
+  .btn-result-done {
+    padding: 7px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 600;
+    color: rgba(255,255,255,0.8);
+    text-align: center;
+  }
+
+  /* Result simple */
+  .result-simple-content {
+    flex: 1;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    padding: 0 12px 12px;
+    gap: 5px;
+  }
+  .simple-metric-row {
+    display: flex;
+    gap: 5px;
+  }
+  .simple-metric {
+    flex: 1;
+    background: rgba(255,255,255,0.07);
+    border-radius: 10px;
+    padding: 8px 8px;
+    text-align: center;
+  }
+  .simple-metric-val { font-size: 16px; font-weight: 700; color: white; }
+  .simple-metric-lbl { font-size: 9px; color: rgba(255,255,255,0.4); margin-top: 2px; }
+
+  .tip-card {
+    background: rgba(255,214,10,0.1);
+    border: 1px solid rgba(255,214,10,0.2);
+    border-radius: 10px;
+    padding: 6px 8px;
+    font-size: 9px;
+    color: rgba(255,214,10,0.85);
+    line-height: 1.4;
+    margin-top: 4px;
+  }
+
+  /* AI loading */
+  .ai-loading-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    padding: 8px;
+  }
+  .spinner-ring {
+    width: 44px; height: 44px;
+    border-radius: 50%;
+    border: 3px solid rgba(51,130,229,0.2);
+    border-top-color: var(--accent);
+    animation: spin 1s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .ai-loading-text {
+    font-size: 11px;
+    color: rgba(255,255,255,0.5);
+  }
+  .ai-timeout-label {
+    font-size: 9px;
+    color: rgba(255,255,255,0.25);
+  }
+
+  /* AI result */
+  .ai-result-content {
+    flex: 1;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    padding: 0 12px 12px;
+    gap: 5px;
+    overflow: hidden;
+  }
+  .ai-feedback-block {
+    background: rgba(51,130,229,0.1);
+    border-left: 2px solid var(--accent);
+    border-radius: 0 8px 8px 0;
+    padding: 5px 8px;
+  }
+  .ai-block-title { font-size: 9px; font-weight: 700; color: var(--accent); margin-bottom: 2px; text-transform: uppercase; letter-spacing: 0.5px; }
+  .ai-block-text  { font-size: 9px; color: rgba(255,255,255,0.75); line-height: 1.4; }
+
+  .ai-disclaimer {
+    font-size: 8px;
+    color: rgba(255,255,255,0.25);
+    text-align: center;
+    margin-top: 3px;
+  }
+
+  /* AI fallback */
+  .ai-fallback-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 8px 14px 12px;
+    gap: 8px;
+  }
+  .fallback-icon { font-size: 22px; }
+  .fallback-text {
+    font-size: 10px;
+    color: rgba(255,255,255,0.7);
+    text-align: center;
+    line-height: 1.5;
+  }
+  .fallback-warn {
+    font-size: 9px;
+    color: rgba(255,165,0,0.65);
+    text-align: center;
+  }
+
+  /* Home simple */
+  .home-simple-note {
+    font-size: 9px;
+    color: rgba(255,50,50,0.5);
+    text-align: center;
+    padding: 4px 6px;
+    background: rgba(255,50,50,0.08);
+    border-radius: 6px;
+    margin-bottom: 5px;
+  }
+
+  /* ─── Overview section ─── */
+  .overview-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(176px, 1fr));
+    gap: 32px 24px;
+    max-width: 1100px;
+  }
+
+  /* ─── Divider label ─── */
+  .divider-label {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 28px;
+    margin-top: 36px;
+  }
+  .divider-label:first-child { margin-top: 0; }
+  .divider-dot {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .divider-text {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text-2);
+    letter-spacing: 0.3px;
+  }
+  .divider-line {
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  /* ─── Legend ─── */
+  .legend {
+    display: flex;
+    gap: 24px;
+    flex-wrap: wrap;
+    margin-bottom: 36px;
+  }
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    color: var(--text-2);
+  }
+  .legend-dot {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+  }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { height: 4px; width: 4px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+
+  /* ─── PreviewView ─── */
+  .preview-content {
+    flex:1; display:flex; flex-direction:column;
+    align-items:center; padding:2px 10px 10px;
+  }
+  .preview-mode-name { font-size:12px; font-weight:700; color:white; margin-bottom:1px; }
+  .preview-mode-sub  { font-size:9px; color:rgba(255,255,255,0.4); margin-bottom:6px; }
+  .preview-label {
+    font-size:8px; font-weight:700; letter-spacing:0.8px;
+    color:rgba(255,255,255,0.25); text-transform:uppercase; margin-bottom:4px;
+  }
+  .preview-circle-wrap {
+    position:relative; width:74px; height:74px;
+    display:flex; align-items:center; justify-content:center; margin-bottom:6px;
+  }
+  .preview-circle { width:74px; height:74px; border-radius:50%; position:absolute; top:0; left:0; }
+
+  /* Demo circle animations (Box Breathing uses inline SVG) */
+  .box-svg { width:74px; height:74px; display:block; overflow:visible; }
+  .preview-circle.f478-demo  { animation: f478Circle  9.5s ease-in-out infinite; }
+  .preview-circle.calm-demo  { animation: calmCircle  8s   ease-in-out infinite; }
+  .preview-circle.belly-demo { animation: bellyCircle 10s  ease-in-out infinite; }
+  @keyframes f478Circle {
+    0%   { transform:scale(0.55); background:radial-gradient(circle at 40% 35%,rgba(100,165,255,.9),rgba(51,130,229,.7)); }
+    21%  { transform:scale(1.0);  background:radial-gradient(circle at 40% 35%,rgba(100,165,255,.9),rgba(51,130,229,.7)); }
+    22%  { transform:scale(1.0);  background:radial-gradient(circle at 40% 35%,rgba(160,130,255,.9),rgba(123,79,203,.7)); }
+    58%  { transform:scale(1.0);  background:radial-gradient(circle at 40% 35%,rgba(160,130,255,.9),rgba(123,79,203,.7)); }
+    59%  { transform:scale(1.0);  background:radial-gradient(circle at 40% 35%,rgba(70,220,210,.9),rgba(47,188,178,.7)); }
+    100% { transform:scale(0.55); background:radial-gradient(circle at 40% 35%,rgba(70,220,210,.9),rgba(47,188,178,.7)); }
+  }
+  @keyframes calmCircle {
+    0%   { transform:scale(0.55); background:radial-gradient(circle at 40% 35%,rgba(100,165,255,.9),rgba(51,130,229,.7)); }
+    40%  { transform:scale(1.0);  background:radial-gradient(circle at 40% 35%,rgba(100,165,255,.9),rgba(51,130,229,.7)); }
+    41%  { transform:scale(1.0);  background:radial-gradient(circle at 40% 35%,rgba(70,220,210,.9),rgba(47,188,178,.7)); }
+    100% { transform:scale(0.55); background:radial-gradient(circle at 40% 35%,rgba(70,220,210,.9),rgba(47,188,178,.7)); }
+  }
+  @keyframes bellyCircle {
+    0%   { transform:scaleX(0.55) scaleY(0.55); background:radial-gradient(circle at 40% 35%,rgba(255,210,80,.9),rgba(255,159,10,.7)); }
+    50%  { transform:scaleX(1.15) scaleY(0.85); background:radial-gradient(circle at 40% 35%,rgba(255,210,80,.9),rgba(255,159,10,.7)); }
+    51%  { transform:scaleX(1.15) scaleY(0.85); background:radial-gradient(circle at 40% 35%,rgba(255,150,80,.9),rgba(255,107,53,.7)); }
+    100% { transform:scaleX(0.55) scaleY(0.55); background:radial-gradient(circle at 40% 35%,rgba(255,150,80,.9),rgba(255,107,53,.7)); }
+  }
+
+  /* Phase chips */
+  .preview-phases { display:flex; gap:3px; margin-bottom:5px; width:100%; }
+  .prev-phase {
+    flex:1; display:flex; flex-direction:column; align-items:center;
+    padding:4px 2px; border-radius:8px; background:rgba(255,255,255,0.05);
+    transition: background .1s;
+  }
+  .prev-phase-name { font-size:9px; font-weight:700; }
+  .prev-phase-dur  { font-size:8px; color:rgba(255,255,255,0.3); }
+
+  /* Phase timeline bar */
+  .phase-timeline { width:100%; height:4px; border-radius:2px; overflow:hidden; display:flex; margin-bottom:7px; }
+  .phase-seg-i { background:var(--accent); height:100%; }
+  .phase-seg-h { background:var(--purple); height:100%; }
+  .phase-seg-e { background:var(--teal);   height:100%; }
+
+  /* Haptic indicator row */
+  .haptic-row { display:flex; align-items:flex-start; gap:3px; margin-bottom:8px; }
+  .haptic-pill { display:flex; flex-direction:column; align-items:center; gap:2px; }
+  .haptic-icon-box {
+    width:26px; height:24px; border-radius:6px;
+    display:flex; align-items:center; justify-content:center; font-size:12px;
+    background:rgba(255,255,255,0.07); border:1px solid rgba(255,255,255,0.1);
+    transition: box-shadow .05s;
+  }
+  .haptic-icon-lbl { font-size:7px; color:rgba(255,255,255,0.25); text-align:center; white-space:nowrap; }
+  .haptic-arr { font-size:9px; color:rgba(255,255,255,0.12); padding-top:6px; }
+
+  /* Haptic flash — Box Breathing (16s · 4×4s) */
+  .hf-box-i  { animation: hfBoxI  16s ease-in-out infinite; }
+  .hf-box-h  { animation: hfBoxH  16s ease-in-out infinite; }
+  .hf-box-e  { animation: hfBoxE  16s ease-in-out infinite; }
+  .hf-box-h2 { animation: hfBoxH2 16s ease-in-out infinite; }
+  @keyframes hfBoxI {
+    0%  { background:rgba(51,130,229,.7); border-color:rgba(51,130,229,.9); box-shadow:0 0 10px rgba(51,130,229,.8); }
+    6%  { background:rgba(255,255,255,.07); border-color:rgba(255,255,255,.1); box-shadow:none; }
+    100%{ background:rgba(255,255,255,.07); border-color:rgba(255,255,255,.1); }
+  }
+  @keyframes hfBoxH {
+    0%,24%{ background:rgba(255,255,255,.07); }
+    25%  { background:rgba(123,79,203,.7); border-color:rgba(123,79,203,.9); box-shadow:0 0 10px rgba(123,79,203,.8); }
+    31%  { background:rgba(255,255,255,.07); border-color:rgba(255,255,255,.1); box-shadow:none; }
+    100% { background:rgba(255,255,255,.07); }
+  }
+  @keyframes hfBoxE {
+    0%,49%{ background:rgba(255,255,255,.07); }
+    50%  { background:rgba(47,188,178,.7); border-color:rgba(47,188,178,.9); box-shadow:0 0 10px rgba(47,188,178,.8); }
+    56%  { background:rgba(255,255,255,.07); border-color:rgba(255,255,255,.1); box-shadow:none; }
+    100% { background:rgba(255,255,255,.07); }
+  }
+  @keyframes hfBoxH2 {
+    0%,74%{ background:rgba(255,255,255,.07); }
+    75%  { background:rgba(123,79,203,.7); border-color:rgba(123,79,203,.9); box-shadow:0 0 10px rgba(123,79,203,.8); }
+    81%  { background:rgba(255,255,255,.07); border-color:rgba(255,255,255,.1); box-shadow:none; }
+    100% { background:rgba(255,255,255,.07); }
+  }
+
+  /* Haptic flash — 4-7-8 (9.5s) */
+  .hf-478-i { animation: hfF478I 9.5s ease-in-out infinite; }
+  .hf-478-h { animation: hfF478H 9.5s ease-in-out infinite; }
+  .hf-478-e { animation: hfF478E 9.5s ease-in-out infinite; }
+  @keyframes hfF478I {
+    0%  { background:rgba(51,130,229,.7); border-color:rgba(51,130,229,.9); box-shadow:0 0 10px rgba(51,130,229,.8); }
+    8%  { background:rgba(255,255,255,.07); border-color:rgba(255,255,255,.1); box-shadow:none; }
+    100%{ background:rgba(255,255,255,.07); }
+  }
+  @keyframes hfF478H {
+    0%,20%{ background:rgba(255,255,255,.07); }
+    21%  { background:rgba(123,79,203,.7); border-color:rgba(123,79,203,.9); box-shadow:0 0 10px rgba(123,79,203,.8); }
+    29%  { background:rgba(255,255,255,.07); border-color:rgba(255,255,255,.1); box-shadow:none; }
+    100% { background:rgba(255,255,255,.07); }
+  }
+  @keyframes hfF478E {
+    0%,57%{ background:rgba(255,255,255,.07); }
+    58%  { background:rgba(47,188,178,.7); border-color:rgba(47,188,178,.9); box-shadow:0 0 10px rgba(47,188,178,.8); }
+    66%  { background:rgba(255,255,255,.07); border-color:rgba(255,255,255,.1); box-shadow:none; }
+    100% { background:rgba(255,255,255,.07); }
+  }
+
+  /* Haptic flash — Calming Breath (8s) */
+  .hf-calm-i { animation: hfCalmI 8s ease-in-out infinite; }
+  .hf-calm-e { animation: hfCalmE 8s ease-in-out infinite; }
+  @keyframes hfCalmI {
+    0%  { background:rgba(51,130,229,.7); border-color:rgba(51,130,229,.9); box-shadow:0 0 10px rgba(51,130,229,.8); }
+    8%  { background:rgba(255,255,255,.07); border-color:rgba(255,255,255,.1); box-shadow:none; }
+    100%{ background:rgba(255,255,255,.07); }
+  }
+  @keyframes hfCalmE {
+    0%,39%{ background:rgba(255,255,255,.07); }
+    40%  { background:rgba(47,188,178,.7); border-color:rgba(47,188,178,.9); box-shadow:0 0 10px rgba(47,188,178,.8); }
+    48%  { background:rgba(255,255,255,.07); border-color:rgba(255,255,255,.1); box-shadow:none; }
+    100% { background:rgba(255,255,255,.07); }
+  }
+
+  /* Phase chip highlight animations — Box (16s · 4×25%) */
+  .box-i  { animation: phBoxI  16s ease-in-out infinite; }
+  .box-h  { animation: phBoxH  16s ease-in-out infinite; }
+  .box-e  { animation: phBoxE  16s ease-in-out infinite; }
+  .box-h2 { animation: phBoxH2 16s ease-in-out infinite; }
+  @keyframes phBoxI  { 0%{background:rgba(51,130,229,.2)} 24%{background:rgba(51,130,229,.2)} 25%{background:rgba(255,255,255,.05)} 100%{background:rgba(255,255,255,.05)} }
+  @keyframes phBoxH  { 0%,24%{background:rgba(255,255,255,.05)} 25%{background:rgba(123,79,203,.2)} 49%{background:rgba(123,79,203,.2)} 50%{background:rgba(255,255,255,.05)} 100%{background:rgba(255,255,255,.05)} }
+  @keyframes phBoxE  { 0%,49%{background:rgba(255,255,255,.05)} 50%{background:rgba(47,188,178,.2)} 74%{background:rgba(47,188,178,.2)} 75%{background:rgba(255,255,255,.05)} 100%{background:rgba(255,255,255,.05)} }
+  @keyframes phBoxH2 { 0%,74%{background:rgba(255,255,255,.05)} 75%{background:rgba(123,79,203,.2)} 100%{background:rgba(123,79,203,.2)} }
+
+  .box-i  .prev-phase-name { color:var(--accent); animation: phTxtBoxI  16s ease-in-out infinite; }
+  .box-h  .prev-phase-name { color:var(--purple); animation: phTxtBoxH  16s ease-in-out infinite; }
+  .box-e  .prev-phase-name { color:var(--teal);   animation: phTxtBoxE  16s ease-in-out infinite; }
+  .box-h2 .prev-phase-name { color:var(--purple); animation: phTxtBoxH2 16s ease-in-out infinite; }
+  @keyframes phTxtBoxI  { 0%{opacity:1} 24%{opacity:1} 25%{opacity:.3} 100%{opacity:.3} }
+  @keyframes phTxtBoxH  { 0%,24%{opacity:.3} 25%{opacity:1} 49%{opacity:1} 50%{opacity:.3} 100%{opacity:.3} }
+  @keyframes phTxtBoxE  { 0%,49%{opacity:.3} 50%{opacity:1} 74%{opacity:1} 75%{opacity:.3} 100%{opacity:.3} }
+  @keyframes phTxtBoxH2 { 0%,74%{opacity:.3} 75%{opacity:1} 100%{opacity:1} }
+
+  /* Phase chip highlight — 4-7-8 */
+  .f478-i { animation: phF478I 9.5s ease-in-out infinite; }
+  .f478-h { animation: phF478H 9.5s ease-in-out infinite; }
+  .f478-e { animation: phF478E 9.5s ease-in-out infinite; }
+  @keyframes phF478I { 0%{background:rgba(51,130,229,.2)} 20%{background:rgba(51,130,229,.2)} 21%{background:rgba(255,255,255,.05)} 100%{background:rgba(255,255,255,.05)} }
+  @keyframes phF478H { 0%,20%{background:rgba(255,255,255,.05)} 21%{background:rgba(123,79,203,.2)} 57%{background:rgba(123,79,203,.2)} 58%{background:rgba(255,255,255,.05)} 100%{background:rgba(255,255,255,.05)} }
+  @keyframes phF478E { 0%,57%{background:rgba(255,255,255,.05)} 58%{background:rgba(47,188,178,.2)} 100%{background:rgba(47,188,178,.2)} }
+
+  .f478-i .prev-phase-name { color:var(--accent); animation: phTxtF478I 9.5s ease-in-out infinite; }
+  .f478-h .prev-phase-name { color:var(--purple); animation: phTxtF478H 9.5s ease-in-out infinite; }
+  .f478-e .prev-phase-name { color:var(--teal);   animation: phTxtF478E 9.5s ease-in-out infinite; }
+  @keyframes phTxtF478I { 0%{opacity:1} 20%{opacity:1} 21%{opacity:.3} 100%{opacity:.3} }
+  @keyframes phTxtF478H { 0%,20%{opacity:.3} 21%{opacity:1} 57%{opacity:1} 58%{opacity:.3} 100%{opacity:.3} }
+  @keyframes phTxtF478E { 0%,57%{opacity:.3} 58%{opacity:1} 100%{opacity:1} }
+
+  /* Phase chip highlight — Calming */
+  .calm-i { animation: phCalmI 8s ease-in-out infinite; }
+  .calm-e { animation: phCalmE 8s ease-in-out infinite; }
+  @keyframes phCalmI { 0%{background:rgba(51,130,229,.2)} 39%{background:rgba(51,130,229,.2)} 40%{background:rgba(255,255,255,.05)} 100%{background:rgba(255,255,255,.05)} }
+  @keyframes phCalmE { 0%,39%{background:rgba(255,255,255,.05)} 40%{background:rgba(47,188,178,.2)} 100%{background:rgba(47,188,178,.2)} }
+
+  .calm-i .prev-phase-name { color:var(--accent); animation: phTxtCalmI 8s ease-in-out infinite; }
+  .calm-e .prev-phase-name { color:var(--teal);   animation: phTxtCalmE 8s ease-in-out infinite; }
+  @keyframes phTxtCalmI { 0%{opacity:1} 39%{opacity:1} 40%{opacity:.3} 100%{opacity:.3} }
+  @keyframes phTxtCalmE { 0%,39%{opacity:.3} 40%{opacity:1} 100%{opacity:1} }
+
+  /* Haptic flash — Belly / Belly Breathing (10s · 5s+5s) */
+  .hf-belly-i { animation: hfBellyI 10s ease-in-out infinite; }
+  .hf-belly-e { animation: hfBellyE 10s ease-in-out infinite; }
+  @keyframes hfBellyI {
+    0%  { background:rgba(255,159,10,.7); border-color:rgba(255,159,10,.9); box-shadow:0 0 10px rgba(255,159,10,.8); }
+    8%  { background:rgba(255,255,255,.07); border-color:rgba(255,255,255,.1); box-shadow:none; }
+    100%{ background:rgba(255,255,255,.07); border-color:rgba(255,255,255,.1); }
+  }
+  @keyframes hfBellyE {
+    0%,49%{ background:rgba(255,255,255,.07); }
+    50%  { background:rgba(255,107,53,.7); border-color:rgba(255,107,53,.9); box-shadow:0 0 10px rgba(255,107,53,.8); }
+    58%  { background:rgba(255,255,255,.07); border-color:rgba(255,255,255,.1); box-shadow:none; }
+    100% { background:rgba(255,255,255,.07); }
+  }
+
+  /* Phase chip highlight — Belly (Belly) */
+  .belly-i { animation: phBellyI 10s ease-in-out infinite; }
+  .belly-e { animation: phBellyE 10s ease-in-out infinite; }
+  @keyframes phBellyI { 0%{background:rgba(255,159,10,.2)} 49%{background:rgba(255,159,10,.2)} 50%{background:rgba(255,255,255,.05)} 100%{background:rgba(255,255,255,.05)} }
+  @keyframes phBellyE { 0%,49%{background:rgba(255,255,255,.05)} 50%{background:rgba(255,107,53,.2)} 100%{background:rgba(255,107,53,.2)} }
+
+  .belly-i .prev-phase-name { color:#FF9F0A; animation: phTxtBellyI 10s ease-in-out infinite; }
+  .belly-e .prev-phase-name { color:#FF6B35; animation: phTxtBellyE 10s ease-in-out infinite; }
+  @keyframes phTxtBellyI { 0%{opacity:1} 49%{opacity:1} 50%{opacity:.3} 100%{opacity:.3} }
+  @keyframes phTxtBellyE { 0%,49%{opacity:.3} 50%{opacity:1} 100%{opacity:1} }
+
+  /* Preview buttons */
+  .btn-pv-start { width:100%; padding:7px; background:var(--accent); border-radius:12px; font-size:11px; font-weight:700; color:white; text-align:center; margin-bottom:4px; }
+  .btn-pv-back  { font-size:10px; color:rgba(255,255,255,0.3); text-align:center; }
+
+  /* Language switcher */
+  #lang-switch {
+    position: fixed; top: 14px; right: 18px; z-index: 9999;
+    display: flex; gap: 6px; align-items: center;
+  }
+  .lang-btn {
+    padding: 5px 12px; border-radius: 20px; font-size: 12px; font-weight: 700;
+    cursor: pointer; border: 1.5px solid rgba(255,255,255,0.18);
+    background: rgba(255,255,255,0.06); color: rgba(255,255,255,0.5);
+    text-decoration: none; transition: all .15s;
+  }
+  .lang-btn.active {
+    background: rgba(51,130,229,0.25); border-color: #3382E5; color: #fff;
+  }
+  .lang-btn:hover { background: rgba(255,255,255,0.12); color: #fff; }
+</style>
+</head>
+<body>
+
+<div id="lang-switch">
+  <a class="lang-btn" href="index.html">中文</a>
+  <a class="lang-btn active" href="en.html">EN</a>
+</div>
+<script>sessionStorage.setItem('ww-lang','1');</script>
+
+<!-- Header -->
+<div class="page-header">
+  <h1>WellnessWatch <span>Watch UI</span> Mockup</h1>
+  <p>watchOS Screen Spec · Ordered by User Flow · 41mm (176 × 215 pt) baseline</p>
+  <span class="badge">v1.1 · 2026-03-26 · Review Ready</span>
+</div>
+
+<!-- Nav tabs -->
+<div class="flow-nav">
+  <button class="flow-tab active" onclick="showFlow('overview')">
+    <span class="dot" style="background:#636366"></span>Overview
+  </button>
+  <button class="flow-tab" onclick="showFlow('flowA')">
+    <span class="dot" style="background:#3382E5"></span>Flow A — First Launch
+  </button>
+  <button class="flow-tab" onclick="showFlow('flowB')">
+    <span class="dot" style="background:#30D158"></span>Flow B — Core Session
+  </button>
+  <button class="flow-tab" onclick="showFlow('flowC')">
+    <span class="dot" style="background:#7B4FCB"></span>Flow C — AI Coach
+  </button>
+  <button class="flow-tab" onclick="showFlow('flowD')">
+    <span class="dot" style="background:#FF9F0A"></span>Flow D — Offline Mode
+  </button>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     OVERVIEW
+══════════════════════════════════════════════ -->
+<div id="overview" class="flow-section active">
+  <div class="flow-title">All Screens Overview</div>
+  <div class="flow-desc">WellnessWatch has 10 core screens, grouped by user journey. Click a Flow tab above to see each flow's screen sequence and design notes.</div>
+
+  <div class="legend">
+    <div class="legend-item"><div class="legend-dot" style="background:#3382E5"></div>Flow A — First Launch</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#30D158"></div>Flow B — Core Session</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#7B4FCB"></div>Flow C — AI Coach</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#FF9F0A"></div>Flow D — Offline Mode</div>
+  </div>
+
+  <!-- Flow A -->
+  <div class="divider-label">
+    <div class="divider-dot" style="background:#3382E5"></div>
+    <div class="divider-text">Flow A — First Launch</div>
+    <div class="divider-line"></div>
+  </div>
+  <div class="overview-grid">
+    <div class="watch-wrap">
+      <div class="watch-body">
+        <div class="watch-screen">
+          <div class="status-bar"><span class="status-time">9:41</span></div>
+          <div class="onboarding-content">
+            <div class="app-icon">🫁</div>
+            <div class="onboarding-title">WellnessWatch</div>
+            <div class="onboarding-sub">Stress relief on your wrist,<br>anytime, anywhere</div>
+            <div class="btn-primary">Get Started</div>
+          </div>
+        </div>
+      </div>
+      <div class="screen-label">OnboardingView</div>
+      <div class="screen-sublabel">First Launch</div>
+    </div>
+
+    <div class="watch-wrap">
+      <div class="watch-body">
+        <div class="watch-screen">
+          <div class="status-bar"><span class="status-time">9:41</span></div>
+          <div class="home-content">
+            <div class="screen-section-label">Breathing Modes</div>
+            <div class="stress-card">
+              <div class="stress-emoji">😐</div>
+              <div class="stress-info">
+                <div class="stress-level">Mild Stress</div>
+                <div class="stress-data">HR 72 · HRV 38ms</div>
+              </div>
+            </div>
+            <div class="mode-list">
+              <div class="mode-item"><span class="mode-name">4-7-8 Breathing</span><span class="mode-dur">4 min</span></div>
+              <div class="mode-item"><span class="mode-name">Box Breathing</span><span class="mode-dur">5 min</span></div>
+              <div class="mode-item"><span class="mode-name">Belly Breathing</span><span class="mode-dur">5 min</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="screen-label">HomeView</div>
+      <div class="screen-sublabel">Full Mode (with HealthKit)</div>
+    </div>
+  </div>
+
+  <!-- Flow B -->
+  <div class="divider-label">
+    <div class="divider-dot" style="background:#30D158"></div>
+    <div class="divider-text">Flow B — Core Session</div>
+    <div class="divider-line"></div>
+  </div>
+  <div class="overview-grid">
+    <div class="watch-wrap">
+      <div class="watch-body">
+        <div class="watch-screen">
+          <div class="status-bar"><span class="status-time">9:41</span></div>
+          <div class="breathing-content">
+            <div class="breath-circle-wrap">
+              <div class="breath-circle inhale"></div>
+              <span class="breath-count">4</span>
+            </div>
+            <div class="breath-phase">Inhale</div>
+            <div class="progress-bar-wrap">
+              <div class="progress-bar-fill blue" style="width:35%"></div>
+            </div>
+            <div class="cycle-count">Round 2 / 5</div>
+          </div>
+        </div>
+      </div>
+      <div class="screen-label">BreathingView</div>
+      <div class="screen-sublabel">Inhale phase (blue animation)</div>
+    </div>
+
+    <div class="watch-wrap">
+      <div class="watch-body">
+        <div class="watch-screen">
+          <div class="status-bar"><span class="status-time">9:41</span></div>
+          <div class="breathing-content">
+            <div class="breath-circle-wrap">
+              <div class="breath-circle exhale"></div>
+              <span class="breath-count">6</span>
+            </div>
+            <div class="breath-phase">Exhale</div>
+            <div class="progress-bar-wrap">
+              <div class="progress-bar-fill teal" style="width:68%"></div>
+            </div>
+            <div class="cycle-count">Round 4 / 5</div>
+          </div>
+        </div>
+      </div>
+      <div class="screen-label">BreathingView</div>
+      <div class="screen-sublabel">Exhale phase (teal animation)</div>
+    </div>
+
+    <div class="watch-wrap">
+      <div class="watch-body">
+        <div class="watch-screen">
+          <div class="status-bar"><span class="status-time">9:46</span></div>
+          <div class="result-content">
+            <div class="result-header">
+              <div class="result-check">✓</div>
+              <div class="result-title">Done!</div>
+            </div>
+            <div class="result-metric">
+              <div><div class="metric-label">Heart Rate</div><div class="metric-value">72→64</div><div class="metric-change">↓ 8 bpm</div></div>
+            </div>
+            <div class="result-metric">
+              <div><div class="metric-label">HRV</div><div class="metric-value">38→45</div><div class="metric-change down">↑ 7 ms</div></div>
+            </div>
+            <div class="result-btns">
+              <div class="btn-result-ai">⚙ View AI Advice</div>
+              <div class="btn-result-done">Done</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="screen-label">ResultView</div>
+      <div class="screen-sublabel">Full Mode (with biometric data)</div>
+    </div>
+  </div>
+
+  <!-- Flow C -->
+  <div class="divider-label">
+    <div class="divider-dot" style="background:#7B4FCB"></div>
+    <div class="divider-text">Flow C — AI Personalized Coach</div>
+    <div class="divider-line"></div>
+  </div>
+  <div class="overview-grid">
+    <div class="watch-wrap">
+      <div class="watch-body">
+        <div class="watch-screen">
+          <div class="status-bar"><span class="status-time">9:46</span></div>
+          <div class="ai-loading-content">
+            <div class="spinner-ring"></div>
+            <div class="ai-loading-text">Analyzing...</div>
+            <div class="ai-timeout-label">timeout 5 sec</div>
+          </div>
+        </div>
+      </div>
+      <div class="screen-label">AICoachView</div>
+      <div class="screen-sublabel">Loading</div>
+    </div>
+
+    <div class="watch-wrap">
+      <div class="watch-body">
+        <div class="watch-screen">
+          <div class="status-bar"><span class="status-time">9:46</span></div>
+          <div class="ai-result-content">
+            <div class="screen-section-label">AI Personalized Feedback</div>
+            <div class="ai-feedback-block">
+              <div class="ai-block-title">Session Rating</div>
+              <div class="ai-block-text">Heart rate dropped significantly, excellent relaxation.</div>
+            </div>
+            <div class="ai-feedback-block" style="border-left-color:var(--teal)">
+              <div class="ai-block-title" style="color:var(--teal)">Body Status</div>
+              <div class="ai-block-text">HRV increase indicates good autonomic recovery.</div>
+            </div>
+            <div class="ai-feedback-block" style="border-left-color:var(--purple)">
+              <div class="ai-block-title" style="color:var(--purple)">Next Suggestion</div>
+              <div class="ai-block-text">Try Resonance Breathing for 10 min tomorrow.</div>
+            </div>
+            <div class="ai-disclaimer">⚙ AI-generated content, not medical advice</div>
+          </div>
+        </div>
+      </div>
+      <div class="screen-label">AICoachView</div>
+      <div class="screen-sublabel">AI Feedback Display</div>
+    </div>
+
+    <div class="watch-wrap">
+      <div class="watch-body">
+        <div class="watch-screen">
+          <div class="status-bar"><span class="status-time">9:47</span></div>
+          <div class="ai-fallback-content">
+            <div class="fallback-icon">💪</div>
+            <div class="fallback-text">Great job! Consistent practice is the best way to improve HRV. Keep it up tomorrow!</div>
+            <div class="fallback-warn">⚠ AI suggestions currently unavailable</div>
+          </div>
+        </div>
+      </div>
+      <div class="screen-label">AICoachView</div>
+      <div class="screen-sublabel">Fallback message (no network)</div>
+    </div>
+  </div>
+
+  <!-- Flow D -->
+  <div class="divider-label">
+    <div class="divider-dot" style="background:#FF9F0A"></div>
+    <div class="divider-text">Flow D — No HealthKit Fallback</div>
+    <div class="divider-line"></div>
+  </div>
+  <div class="overview-grid">
+    <div class="watch-wrap">
+      <div class="watch-body">
+        <div class="watch-screen">
+          <div class="status-bar"><span class="status-time">9:41</span></div>
+          <div class="home-content">
+            <div class="home-simple-note">✗ Health data not authorized</div>
+            <div class="screen-section-label">Breathing Modes</div>
+            <div class="mode-list">
+              <div class="mode-item"><span class="mode-name">4-7-8 Breathing</span><span class="mode-dur">4 min</span></div>
+              <div class="mode-item"><span class="mode-name">Box Breathing</span><span class="mode-dur">5 min</span></div>
+              <div class="mode-item"><span class="mode-name">Belly Breathing</span><span class="mode-dur">5 min</span></div>
+              <div class="mode-item"><span class="mode-name">Calming Breath</span><span class="mode-dur">3 min</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="screen-label">HomeView</div>
+      <div class="screen-sublabel">Simplified Mode (no biometrics)</div>
+    </div>
+
+    <div class="watch-wrap">
+      <div class="watch-body">
+        <div class="watch-screen">
+          <div class="status-bar"><span class="status-time">9:46</span></div>
+          <div class="result-simple-content">
+            <div class="result-header">
+              <div class="result-check">✓</div>
+              <div class="result-title">Done!</div>
+            </div>
+            <div class="simple-metric-row">
+              <div class="simple-metric">
+                <div class="simple-metric-val">5/5</div>
+                <div class="simple-metric-lbl">Rounds Done</div>
+              </div>
+              <div class="simple-metric">
+                <div class="simple-metric-val">5m</div>
+                <div class="simple-metric-lbl">Duration</div>
+              </div>
+            </div>
+            <div class="tip-card">💡 Enable Health data<br>for personalized insights</div>
+            <div class="btn-result-done" style="margin-top:5px">Done</div>
+          </div>
+        </div>
+      </div>
+      <div class="screen-label">ResultView</div>
+      <div class="screen-sublabel">Simplified Mode (no HR / HRV)</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     FLOW A
+══════════════════════════════════════════════ -->
+<div id="flowA" class="flow-section">
+  <div class="flow-title" style="color:#3382E5">Flow A — First Launch</div>
+  <div class="flow-desc">
+    Onboarding shown once after installation. Tapping "Get Started" triggers the HealthKit permission request.
+    Granting enables Full Mode; declining enters Simplified Mode. Core breathing is identical on both paths.
+  </div>
+
+  <div class="screen-row">
+    <!-- Onboarding -->
+    <div class="watch-wrap">
+      <div class="watch-body">
+        <div class="watch-screen">
+          <div class="status-bar"><span class="status-time">9:41</span></div>
+          <div class="onboarding-content">
+            <div class="app-icon">🫁</div>
+            <div class="onboarding-title">WellnessWatch</div>
+            <div class="onboarding-sub">Stress relief on your wrist,<br>anytime, anywhere</div>
+            <div class="btn-primary">Get Started</div>
+          </div>
+        </div>
+      </div>
+      <div class="screen-label">① OnboardingView</div>
+      <div class="screen-sublabel">Shown once · UserDefaults flag</div>
+    </div>
+
+    <div class="arrow">
+      <svg width="28" height="16" viewBox="0 0 28 16" fill="none">
+        <path d="M0 8H24M24 8L18 2M24 8L18 14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+
+    <!-- HK prompt (mock) -->
+    <div class="watch-wrap">
+      <div class="watch-body">
+        <div class="watch-screen">
+          <div class="status-bar"><span class="status-time">9:41</span></div>
+          <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:8px 12px;gap:8px;">
+            <div style="font-size:20px">❤️</div>
+            <div style="font-size:11px;font-weight:700;color:white;text-align:center;">Health Data Access</div>
+            <div style="font-size:9px;color:rgba(255,255,255,0.5);text-align:center;line-height:1.4;">WellnessWatch needs Heart Rate & HRV for personalized guidance</div>
+            <div style="display:flex;gap:6px;margin-top:4px;">
+              <div class="btn-sm continue">Skip</div>
+              <div class="btn-sm" style="background:var(--accent);color:white;">Allow</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="screen-label">② HealthKit Permission</div>
+      <div class="screen-sublabel">System dialog · triggered by "Get Started"</div>
+    </div>
+
+    <!-- Branch arrows -->
+    <div style="display:flex;flex-direction:column;justify-content:center;align-items:center;gap:40px;padding:0 8px;margin-top:20px;">
+      <div style="display:flex;flex-direction:column;align-items:center;gap:4px;">
+        <div class="branch-label branch-yes">Allow ↗</div>
+        <svg width="40" height="16" viewBox="0 0 40 16" fill="none">
+          <path d="M0 14L34 2M34 2L28 8M34 2L28 2" stroke="#30D158" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:center;gap:4px;">
+        <svg width="40" height="16" viewBox="0 0 40 16" fill="none">
+          <path d="M0 2L34 14M34 14L28 8M34 14L28 14" stroke="#FF453A" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+        <div class="branch-label branch-no">Deny ↘</div>
+      </div>
+    </div>
+
+    <!-- Two HomeViews -->
+    <div class="branch-container">
+      <div class="watch-wrap">
+        <div class="watch-body">
+          <div class="watch-screen">
+            <div class="status-bar"><span class="status-time">9:41</span></div>
+            <div class="home-content">
+              <div class="screen-section-label">Breathing Modes</div>
+              <div class="stress-card">
+                <div class="stress-emoji">😐</div>
+                <div class="stress-info">
+                  <div class="stress-level">Mild Stress</div>
+                  <div class="stress-data">HR 72 · HRV 38ms</div>
+                </div>
+              </div>
+              <div class="mode-list">
+                <div class="mode-item"><span class="mode-name">4-7-8 Breathing</span><span class="mode-dur">4 min</span></div>
+                <div class="mode-item"><span class="mode-name">Box Breathing</span><span class="mode-dur">5 min</span></div>
+                <div class="mode-item"><span class="mode-name">Belly Breathing</span><span class="mode-dur">5 min</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="screen-label" style="color:#30D158">③ HomeView (Full)</div>
+        <div class="screen-sublabel">Includes stress index, HR, HRV</div>
+      </div>
+
+      <div class="watch-wrap">
+        <div class="watch-body">
+          <div class="watch-screen">
+            <div class="status-bar"><span class="status-time">9:41</span></div>
+            <div class="home-content">
+              <div class="home-simple-note">✗ Health data not authorized</div>
+              <div class="screen-section-label">Breathing Modes</div>
+              <div class="mode-list">
+                <div class="mode-item"><span class="mode-name">4-7-8 Breathing</span><span class="mode-dur">4 min</span></div>
+                <div class="mode-item"><span class="mode-name">Box Breathing</span><span class="mode-dur">5 min</span></div>
+                <div class="mode-item"><span class="mode-name">Belly Breathing</span><span class="mode-dur">5 min</span></div>
+                <div class="mode-item"><span class="mode-name">Calming Breath</span><span class="mode-dur">3 min</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="screen-label" style="color:#FF9F0A">③ HomeView (Simplified)</div>
+        <div class="screen-sublabel">Hides biometrics · Full breathing</div>
+      </div>
+    </div>
+  </div>
+
+  <div style="margin-top:28px;padding:16px 20px;background:rgba(51,130,229,0.08);border-radius:12px;border-left:3px solid #3382E5;max-width:700px;">
+    <div style="font-size:12px;font-weight:700;color:#3382E5;margin-bottom:6px;">Design Notes</div>
+    <div style="font-size:12px;color:rgba(255,255,255,0.6);line-height:1.7;">
+      • Onboarding Controlled via UserDefaults <code style="background:rgba(255,255,255,0.1);padding:1px 5px;border-radius:4px;">hasLaunchedBefore</code> , not shown again on re-install<br>
+      • HealthKit Permission request triggered by "Get Started", not on cold launch<br>
+      • Both paths share the same HomeView component, using <code style="background:rgba(255,255,255,0.1);padding:1px 5px;border-radius:4px;">@EnvironmentObject</code>  for conditional rendering based on HealthKit state
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     FLOW B
+══════════════════════════════════════════════ -->
+<div id="flowB" class="flow-section">
+  <div class="flow-title" style="color:#30D158">Flow B — Core Session Flow</div>
+  <div class="flow-desc">
+    After selecting a mode in HomeView, the user enters <strong style="color:white">PreviewView</strong>：which dynamically demos the breathing pattern, highlights haptic timing, and lets the user confirm before starting.
+    Haptics guide each phase during the session; minimal touch required throughout.
+  </div>
+
+  <div class="screen-row">
+    <!-- HomeView -->
+    <div class="watch-wrap">
+      <div class="watch-body">
+        <div class="watch-screen">
+          <div class="status-bar"><span class="status-time">9:41</span></div>
+          <div class="home-content">
+            <div class="screen-section-label">Breathing Modes</div>
+            <div class="stress-card">
+              <div class="stress-emoji">😐</div>
+              <div class="stress-info">
+                <div class="stress-level">Mild Stress</div>
+                <div class="stress-data">HR 72 · HRV 38ms</div>
+              </div>
+            </div>
+            <div class="mode-list">
+              <div class="mode-item" style="border:1px solid rgba(51,130,229,0.4);background:rgba(51,130,229,0.15)"><span class="mode-name" style="color:#3382E5">Box Breathing ▶</span><span class="mode-dur">5 min</span></div>
+              <div class="mode-item"><span class="mode-name">4-7-8 Breathing</span><span class="mode-dur">4 min</span></div>
+              <div class="mode-item"><span class="mode-name">Belly Breathing</span><span class="mode-dur">5 min</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="screen-label">① HomeView</div>
+      <div class="screen-sublabel">Select mode → Enter preview</div>
+    </div>
+
+    <div class="arrow"><svg width="28" height="16" viewBox="0 0 28 16" fill="none"><path d="M0 8H24M24 8L18 2M24 8L18 14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+
+    <!-- ── PreviewView: Box Breathing ── -->
+    <div class="watch-wrap">
+      <div class="watch-body" style="box-shadow:0 0 0 2px #3A3A3C,0 0 0 4px #1C1C1E,0 0 30px rgba(51,130,229,0.25),0 20px 60px rgba(0,0,0,0.7);">
+        <div class="watch-screen">
+          <div class="status-bar"><span class="status-time">9:41</span></div>
+          <div class="preview-content">
+            <div class="preview-label">▶ Preview</div>
+            <div class="preview-mode-name">Box Breathing</div>
+            <div class="preview-mode-sub">4 · 4 · 4 · 4 sec · 5 min</div>
+            <div class="preview-circle-wrap">
+              <!-- SVG box: dot travels clockwise along 4 sides (inhale→hold→exhale→hold) -->
+              <svg class="box-svg" viewBox="0 0 74 74" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                  <filter id="bx-glow" x="-60%" y="-60%" width="220%" height="220%">
+                    <feGaussianBlur stdDeviation="2.5" result="blur"/>
+                    <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+                  </filter>
+                  <path id="bpath" d="M17,65 L57,65 Q65,65 65,57 L65,17 Q65,9 57,9 L17,9 Q9,9 9,17 L9,57 Q9,65 17,65"/>
+                </defs>
+                <!-- Bottom edge: inhale (blue) -->
+                <path d="M17,65 L57,65 Q65,65 65,57" stroke="#3382E5" stroke-width="2.5" fill="none" stroke-linecap="round">
+                  <animate attributeName="stroke-opacity" calcMode="discrete" values="0.9;0.2;0.2;0.2" keyTimes="0;0.25;0.5;0.75" dur="16s" repeatCount="indefinite"/>
+                </path>
+                <!-- Right edge: hold (purple) -->
+                <path d="M65,57 L65,17 Q65,9 57,9" stroke="#7B4FCB" stroke-width="2.5" fill="none" stroke-linecap="round">
+                  <animate attributeName="stroke-opacity" calcMode="discrete" values="0.2;0.9;0.2;0.2" keyTimes="0;0.25;0.5;0.75" dur="16s" repeatCount="indefinite"/>
+                </path>
+                <!-- Top edge: exhale (teal) -->
+                <path d="M57,9 L17,9 Q9,9 9,17" stroke="#2FBCB2" stroke-width="2.5" fill="none" stroke-linecap="round">
+                  <animate attributeName="stroke-opacity" calcMode="discrete" values="0.2;0.2;0.9;0.2" keyTimes="0;0.25;0.5;0.75" dur="16s" repeatCount="indefinite"/>
+                </path>
+                <!-- Left edge: hold (purple) -->
+                <path d="M9,17 L9,57 Q9,65 17,65" stroke="#7B4FCB" stroke-width="2.5" fill="none" stroke-linecap="round">
+                  <animate attributeName="stroke-opacity" calcMode="discrete" values="0.2;0.2;0.2;0.9" keyTimes="0;0.25;0.5;0.75" dur="16s" repeatCount="indefinite"/>
+                </path>
+                <!-- Traveling dot -->
+                <circle r="5" filter="url(#bx-glow)">
+                  <animateMotion dur="16s" repeatCount="indefinite">
+                    <mpath href="#bpath"/>
+                  </animateMotion>
+                  <animate attributeName="fill" calcMode="discrete" values="#3382E5;#7B4FCB;#2FBCB2;#7B4FCB" keyTimes="0;0.25;0.5;0.75" dur="16s" repeatCount="indefinite"/>
+                </circle>
+              </svg>
+            </div>
+            <div class="preview-phases">
+              <div class="prev-phase box-i"><div class="prev-phase-name">Inhale</div><div class="prev-phase-dur">4s</div></div>
+              <div class="prev-phase box-h"><div class="prev-phase-name">Hold</div><div class="prev-phase-dur">4s</div></div>
+              <div class="prev-phase box-e"><div class="prev-phase-name">Exhale</div><div class="prev-phase-dur">4s</div></div>
+              <div class="prev-phase box-h2"><div class="prev-phase-name">Hold</div><div class="prev-phase-dur">4s</div></div>
+            </div>
+            <div class="phase-timeline">
+              <div class="phase-seg-i" style="width:25%"></div>
+              <div class="phase-seg-h" style="width:25%"></div>
+              <div class="phase-seg-e" style="width:25%"></div>
+              <div class="phase-seg-h" style="width:25%"></div>
+            </div>
+            <div class="haptic-row" style="gap:2px;">
+              <div class="haptic-pill"><div class="haptic-icon-box hf-box-i">📳</div><div class="haptic-icon-lbl">.start</div></div>
+              <div class="haptic-arr">›</div>
+              <div class="haptic-pill"><div class="haptic-icon-box hf-box-h">〰</div><div class="haptic-icon-lbl">.note</div></div>
+              <div class="haptic-arr">›</div>
+              <div class="haptic-pill"><div class="haptic-icon-box hf-box-e">📳</div><div class="haptic-icon-lbl">.stop</div></div>
+              <div class="haptic-arr">›</div>
+              <div class="haptic-pill"><div class="haptic-icon-box hf-box-h2">〰</div><div class="haptic-icon-lbl">.note</div></div>
+            </div>
+            <div class="btn-pv-start">Start Session</div>
+            <div class="btn-pv-back">← Back</div>
+          </div>
+        </div>
+      </div>
+      <div class="screen-label" style="color:#3382E5">② PreviewView</div>
+      <div class="screen-sublabel">Box · 4-side grid animation + 4 haptics</div>
+    </div>
+
+    <!-- ── PreviewView: 4-7-8 ── -->
+    <div class="watch-wrap">
+      <div class="watch-body" style="box-shadow:0 0 0 2px #3A3A3C,0 0 0 4px #1C1C1E,0 0 30px rgba(123,79,203,0.2),0 20px 60px rgba(0,0,0,0.7);">
+        <div class="watch-screen">
+          <div class="status-bar"><span class="status-time">9:41</span></div>
+          <div class="preview-content">
+            <div class="preview-label">▶ Preview</div>
+            <div class="preview-mode-name">4-7-8 Breathing</div>
+            <div class="preview-mode-sub">4 · 7 · 8 sec · 4 min</div>
+            <div class="preview-circle-wrap">
+              <div class="preview-circle f478-demo"></div>
+            </div>
+            <div class="preview-phases">
+              <div class="prev-phase f478-i"><div class="prev-phase-name">Inhale</div><div class="prev-phase-dur">4s</div></div>
+              <div class="prev-phase f478-h"><div class="prev-phase-name">Hold</div><div class="prev-phase-dur">7s</div></div>
+              <div class="prev-phase f478-e"><div class="prev-phase-name">Exhale</div><div class="prev-phase-dur">8s</div></div>
+            </div>
+            <div class="phase-timeline">
+              <div class="phase-seg-i" style="width:21%"></div>
+              <div class="phase-seg-h" style="width:37%"></div>
+              <div class="phase-seg-e" style="width:42%"></div>
+            </div>
+            <div class="haptic-row">
+              <div class="haptic-pill"><div class="haptic-icon-box hf-478-i">📳</div><div class="haptic-icon-lbl">.start</div></div>
+              <div class="haptic-arr">›</div>
+              <div class="haptic-pill"><div class="haptic-icon-box hf-478-h">〰</div><div class="haptic-icon-lbl">.note</div></div>
+              <div class="haptic-arr">›</div>
+              <div class="haptic-pill"><div class="haptic-icon-box hf-478-e">📳</div><div class="haptic-icon-lbl">.stop</div></div>
+            </div>
+            <div class="btn-pv-start">Start Session</div>
+            <div class="btn-pv-back">← Back</div>
+          </div>
+        </div>
+      </div>
+      <div class="screen-label" style="color:#7B4FCB">② PreviewView</div>
+      <div class="screen-sublabel">4-7-8 · longer hold demo</div>
+    </div>
+
+    <!-- ── PreviewView: Calming (no hold) ── -->
+    <div class="watch-wrap">
+      <div class="watch-body" style="box-shadow:0 0 0 2px #3A3A3C,0 0 0 4px #1C1C1E,0 0 30px rgba(47,188,178,0.2),0 20px 60px rgba(0,0,0,0.7);">
+        <div class="watch-screen">
+          <div class="status-bar"><span class="status-time">9:41</span></div>
+          <div class="preview-content">
+            <div class="preview-label">▶ Preview</div>
+            <div class="preview-mode-name">Calming Breath</div>
+            <div class="preview-mode-sub">4 · 6 sec · 3 min (no hold)</div>
+            <div class="preview-circle-wrap">
+              <div class="preview-circle calm-demo"></div>
+            </div>
+            <div class="preview-phases">
+              <div class="prev-phase calm-i" style="flex:4"><div class="prev-phase-name">Inhale</div><div class="prev-phase-dur">4s</div></div>
+              <div class="prev-phase calm-e" style="flex:6"><div class="prev-phase-name">Exhale</div><div class="prev-phase-dur">6s</div></div>
+            </div>
+            <div class="phase-timeline">
+              <div class="phase-seg-i" style="width:40%"></div>
+              <div class="phase-seg-e" style="width:60%"></div>
+            </div>
+            <div class="haptic-row" style="justify-content:center;gap:12px;">
+              <div class="haptic-pill"><div class="haptic-icon-box hf-calm-i">📳</div><div class="haptic-icon-lbl">.start</div></div>
+              <div class="haptic-arr" style="padding-top:6px;font-size:12px;">———</div>
+              <div class="haptic-pill"><div class="haptic-icon-box hf-calm-e">📳</div><div class="haptic-icon-lbl">.stop</div></div>
+            </div>
+            <div class="btn-pv-start" style="background:var(--teal)">Start Session</div>
+            <div class="btn-pv-back">← Back</div>
+          </div>
+        </div>
+      </div>
+      <div class="screen-label" style="color:#2FBCB2">② PreviewView</div>
+      <div class="screen-sublabel">Calming · no hold, 2 haptic cues</div>
+    </div>
+
+    <!-- ── PreviewView: Belly Breathing (Diaphragmatic) ── -->
+    <div class="watch-wrap">
+      <div class="watch-body" style="box-shadow:0 0 0 2px #3A3A3C,0 0 0 4px #1C1C1E,0 0 30px rgba(255,159,10,0.2),0 20px 60px rgba(0,0,0,0.7);">
+        <div class="watch-screen">
+          <div class="status-bar"><span class="status-time">9:41</span></div>
+          <div class="preview-content">
+            <div class="preview-label">▶ Preview</div>
+            <div class="preview-mode-name">Belly Breathing</div>
+            <div class="preview-mode-sub">5 · 5 sec · 5 min (no hold)</div>
+            <div class="preview-circle-wrap">
+              <div class="preview-circle belly-demo"></div>
+            </div>
+            <div class="preview-phases">
+              <div class="prev-phase belly-i" style="flex:1"><div class="prev-phase-name">Inhale</div><div class="prev-phase-dur">5s</div></div>
+              <div class="prev-phase belly-e" style="flex:1"><div class="prev-phase-name">Exhale</div><div class="prev-phase-dur">5s</div></div>
+            </div>
+            <div class="phase-timeline">
+              <div class="phase-seg-i" style="width:50%"></div>
+              <div class="phase-seg-e" style="width:50%"></div>
+            </div>
+            <div class="haptic-row" style="justify-content:center;gap:12px;">
+              <div class="haptic-pill"><div class="haptic-icon-box hf-belly-i">📳</div><div class="haptic-icon-lbl">.start</div></div>
+              <div class="haptic-arr" style="padding-top:6px;font-size:12px;">———</div>
+              <div class="haptic-pill"><div class="haptic-icon-box hf-belly-e">📳</div><div class="haptic-icon-lbl">.stop</div></div>
+            </div>
+            <div class="btn-pv-start" style="background:linear-gradient(135deg,#FF9F0A,#FF6B35)">Start Session</div>
+            <div class="btn-pv-back">← Back</div>
+          </div>
+        </div>
+      </div>
+      <div class="screen-label" style="color:#FF9F0A">② PreviewView</div>
+      <div class="screen-sublabel">Belly · lateral expansion, 2 haptic cues</div>
+    </div>
+
+    <div class="arrow"><svg width="28" height="16" viewBox="0 0 28 16" fill="none"><path d="M0 8H24M24 8L18 2M24 8L18 14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+
+    <!-- ─ Full session screens below ─ -->
+
+    <!-- Breathing inhale -->
+    <div class="watch-wrap">
+      <div class="watch-body">
+        <div class="watch-screen">
+          <div class="status-bar"><span class="status-time">9:41</span></div>
+          <div class="breathing-content">
+            <div class="breath-circle-wrap">
+              <div class="breath-circle inhale"></div>
+              <span class="breath-count">4</span>
+            </div>
+            <div class="breath-phase">Inhale</div>
+            <div class="progress-bar-wrap">
+              <div class="progress-bar-fill blue" style="width:20%"></div>
+            </div>
+            <div class="cycle-count">Round 1 / 5</div>
+          </div>
+        </div>
+      </div>
+      <div class="screen-label">③ BreathingView</div>
+      <div class="screen-sublabel">Inhale phase · blue expand</div>
+    </div>
+
+    <div class="arrow"><svg width="28" height="16" viewBox="0 0 28 16" fill="none"><path d="M0 8H24M24 8L18 2M24 8L18 14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+
+    <!-- Breathing hold -->
+    <div class="watch-wrap">
+      <div class="watch-body">
+        <div class="watch-screen">
+          <div class="status-bar"><span class="status-time">9:41</span></div>
+          <div class="breathing-content">
+            <div class="breath-circle-wrap">
+              <div class="breath-circle hold"></div>
+              <span class="breath-count">4</span>
+            </div>
+            <div class="breath-phase">Hold</div>
+            <div class="progress-bar-wrap">
+              <div class="progress-bar-fill purple" style="width:38%"></div>
+            </div>
+            <div class="cycle-count">Round 2 / 5</div>
+          </div>
+        </div>
+      </div>
+      <div class="screen-label">③ BreathingView</div>
+      <div class="screen-sublabel">Hold phase · purple stillness</div>
+    </div>
+
+    <div class="arrow"><svg width="28" height="16" viewBox="0 0 28 16" fill="none"><path d="M0 8H24M24 8L18 2M24 8L18 14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+
+    <!-- Breathing exhale -->
+    <div class="watch-wrap">
+      <div class="watch-body">
+        <div class="watch-screen">
+          <div class="status-bar"><span class="status-time">9:41</span></div>
+          <div class="breathing-content">
+            <div class="breath-circle-wrap">
+              <div class="breath-circle exhale"></div>
+              <span class="breath-count">4</span>
+            </div>
+            <div class="breath-phase">Exhale</div>
+            <div class="progress-bar-wrap">
+              <div class="progress-bar-fill teal" style="width:60%"></div>
+            </div>
+            <div class="cycle-count">Round 3 / 5</div>
+          </div>
+        </div>
+      </div>
+      <div class="screen-label">③ BreathingView</div>
+      <div class="screen-sublabel">Exhale phase · teal contract</div>
+    </div>
+
+    <!-- Crown exit arrow (vertical) -->
+    <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;margin:0 6px;margin-top:10px;gap:6px;">
+      <div style="font-size:10px;color:var(--text-3);writing-mode:horizontal-tb;white-space:nowrap;">Digital Crown</div>
+      <svg width="16" height="40" viewBox="0 0 16 40" fill="none">
+        <path d="M8 0V36M8 36L2 28M8 36L14 28" stroke="#636366" stroke-width="1.5" stroke-linecap="round"/>
+      </svg>
+    </div>
+
+    <!-- Confirm -->
+    <div class="watch-wrap">
+      <div class="watch-body">
+        <div class="watch-screen">
+          <div class="status-bar"><span class="status-time">9:44</span></div>
+          <div class="confirm-content">
+            <div style="font-size:22px">⏸</div>
+            <div class="confirm-title">End early?</div>
+            <div class="confirm-sub">Completed 3/5 rounds</div>
+            <div class="confirm-btns">
+              <div class="btn-sm continue">Resume</div>
+              <div class="btn-sm end">End</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="screen-label">④ Confirm dialog</div>
+      <div class="screen-sublabel">Crown Swipe up · end early</div>
+    </div>
+
+    <div class="arrow"><svg width="28" height="16" viewBox="0 0 28 16" fill="none"><path d="M0 8H24M24 8L18 2M24 8L18 14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+
+    <!-- Result -->
+    <div class="watch-wrap">
+      <div class="watch-body">
+        <div class="watch-screen">
+          <div class="status-bar"><span class="status-time">9:46</span></div>
+          <div class="result-content">
+            <div class="result-header">
+              <div class="result-check">✓</div>
+              <div class="result-title">Done!</div>
+            </div>
+            <div class="result-metric">
+              <div><div class="metric-label">Heart Rate</div><div class="metric-value">72→64</div><div class="metric-change">↓ 8 bpm</div></div>
+            </div>
+            <div class="result-metric">
+              <div><div class="metric-label">HRV</div><div class="metric-value">38→45</div><div class="metric-change down">↑ 7 ms</div></div>
+            </div>
+            <div class="result-btns">
+              <div class="btn-result-ai">⚙ View AI Advice</div>
+              <div class="btn-result-done">Done</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="screen-label">⑤ ResultView</div>
+      <div class="screen-sublabel">Full Mode · Flow C available</div>
+    </div>
+  </div>
+
+  <div style="margin-top:28px;padding:16px 20px;background:rgba(48,209,88,0.08);border-radius:12px;border-left:3px solid #30D158;max-width:780px;">
+    <div style="font-size:12px;font-weight:700;color:#30D158;margin-bottom:6px;">Haptic Guide Specification</div>
+    <div style="font-size:12px;color:rgba(255,255,255,0.6);line-height:1.7;">
+      • <strong style="color:rgba(255,255,255,0.85)">Inhale start</strong>：<code style="background:rgba(255,255,255,0.1);padding:1px 5px;border-radius:4px;">.start</code> + 300ms after <code style="background:rgba(255,255,255,0.1);padding:1px 5px;border-radius:4px;">.click</code>（double cue)<br>
+      • <strong style="color:rgba(255,255,255,0.85)">Holding</strong>：Every 2 sec <code style="background:rgba(255,255,255,0.1);padding:1px 5px;border-radius:4px;">.notification</code>（gentle reminder)<br>
+      • <strong style="color:rgba(255,255,255,0.85)">Exhale start</strong>：<code style="background:rgba(255,255,255,0.1);padding:1px 5px;border-radius:4px;">.stop</code>（single long pulse)<br>
+      • <strong style="color:rgba(255,255,255,0.85)">Done</strong>：<code style="background:rgba(255,255,255,0.1);padding:1px 5px;border-radius:4px;">.success</code>（positive feedback) · works in Silent mode
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     FLOW C
+══════════════════════════════════════════════ -->
+<div id="flowC" class="flow-section">
+  <div class="flow-title" style="color:#7B4FCB">Flow C — AI Personalized Coach</div>
+  <div class="flow-desc">
+    AI Feature is off by default; enable it in iOS Companion App Settings.
+    Once on, a "View AI Advice" button appears at the bottom of ResultView. API calls timeout in 5 sec; failures show a static fallback.
+  </div>
+
+  <div class="screen-row">
+    <!-- ResultView trigger -->
+    <div class="watch-wrap">
+      <div class="watch-body">
+        <div class="watch-screen">
+          <div class="status-bar"><span class="status-time">9:46</span></div>
+          <div class="result-content">
+            <div class="result-header">
+              <div class="result-check">✓</div>
+              <div class="result-title">Done!</div>
+            </div>
+            <div class="result-metric">
+              <div><div class="metric-label">Heart Rate</div><div class="metric-value">72→64</div><div class="metric-change">↓ 8 bpm</div></div>
+            </div>
+            <div class="result-metric">
+              <div><div class="metric-label">HRV</div><div class="metric-value">38→45</div><div class="metric-change down">↑ 7 ms</div></div>
+            </div>
+            <div class="result-btns">
+              <div class="btn-result-ai" style="border-color:rgba(123,79,203,0.5);color:#a07ce8;background:rgba(123,79,203,0.2);">⚙ View AI Advice ▶</div>
+              <div class="btn-result-done">Done</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="screen-label">① ResultView</div>
+      <div class="screen-sublabel">AI enabled, button shown</div>
+    </div>
+
+    <div class="arrow"><svg width="28" height="16" viewBox="0 0 28 16" fill="none"><path d="M0 8H24M24 8L18 2M24 8L18 14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+
+    <!-- Loading -->
+    <div class="watch-wrap">
+      <div class="watch-body">
+        <div class="watch-screen">
+          <div class="status-bar"><span class="status-time">9:46</span></div>
+          <div class="ai-loading-content">
+            <div class="spinner-ring"></div>
+            <div class="ai-loading-text">Analyzing...</div>
+            <div class="ai-timeout-label">timeout 5 sec</div>
+          </div>
+        </div>
+      </div>
+      <div class="screen-label">② AICoachView</div>
+      <div class="screen-sublabel">API Requesting</div>
+    </div>
+
+    <!-- Branch -->
+    <div style="display:flex;flex-direction:column;justify-content:center;align-items:center;gap:50px;padding:0 8px;margin-top:20px;">
+      <div style="display:flex;flex-direction:column;align-items:center;gap:4px;">
+        <div class="branch-label branch-yes">Success ↗</div>
+        <svg width="40" height="16" viewBox="0 0 40 16" fill="none"><path d="M0 14L34 2M34 2L28 8M34 2L28 2" stroke="#30D158" stroke-width="1.5" stroke-linecap="round"/></svg>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:center;gap:4px;">
+        <svg width="40" height="16" viewBox="0 0 40 16" fill="none"><path d="M0 2L34 14M34 14L28 8M34 14L28 14" stroke="#FF453A" stroke-width="1.5" stroke-linecap="round"/></svg>
+        <div class="branch-label branch-no">Timeout ↘</div>
+      </div>
+    </div>
+
+    <!-- Two results -->
+    <div class="branch-container">
+      <div class="watch-wrap">
+        <div class="watch-body">
+          <div class="watch-screen">
+            <div class="status-bar"><span class="status-time">9:46</span></div>
+            <div class="ai-result-content">
+              <div class="screen-section-label">AI Personalized Feedback</div>
+              <div class="ai-feedback-block">
+                <div class="ai-block-title">Session Rating</div>
+                <div class="ai-block-text">Heart rate dropped significantly, excellent relaxation.</div>
+              </div>
+              <div class="ai-feedback-block" style="border-left-color:var(--teal)">
+                <div class="ai-block-title" style="color:var(--teal)">Body Status</div>
+                <div class="ai-block-text">HRV increase indicates good autonomic recovery.</div>
+              </div>
+              <div class="ai-feedback-block" style="border-left-color:var(--purple)">
+                <div class="ai-block-title" style="color:var(--purple)">Next Suggestion</div>
+                <div class="ai-block-text">Try Resonance Breathing tomorrow.</div>
+              </div>
+              <div class="ai-disclaimer">⚙ AI-generated content, not medical advice</div>
+            </div>
+          </div>
+        </div>
+        <div class="screen-label" style="color:#30D158">③ AICoachView</div>
+        <div class="screen-sublabel">Successful response (≤ 5 sec)</div>
+      </div>
+
+      <div class="watch-wrap">
+        <div class="watch-body">
+          <div class="watch-screen">
+            <div class="status-bar"><span class="status-time">9:47</span></div>
+            <div class="ai-fallback-content">
+              <div class="fallback-icon">💪</div>
+              <div class="fallback-text">Great job! Consistent practice is the best way to improve HRV. Keep it up tomorrow!</div>
+              <div class="fallback-warn">⚠ AI suggestions currently unavailable</div>
+            </div>
+          </div>
+        </div>
+        <div class="screen-label" style="color:#FF9F0A">③ AICoachView</div>
+        <div class="screen-sublabel">Fallback message (no network / Timeout)</div>
+      </div>
+    </div>
+
+    <div class="arrow" style="margin-top:60px;"><svg width="28" height="16" viewBox="0 0 28 16" fill="none"><path d="M0 8H24M24 8L18 2M24 8L18 14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+
+    <!-- Back to result -->
+    <div class="watch-wrap">
+      <div class="watch-body">
+        <div class="watch-screen">
+          <div class="status-bar"><span class="status-time">9:47</span></div>
+          <div class="result-content">
+            <div class="result-header">
+              <div class="result-check">✓</div>
+              <div class="result-title">Done!</div>
+            </div>
+            <div class="result-metric">
+              <div><div class="metric-label">Heart Rate</div><div class="metric-value">72→64</div><div class="metric-change">↓ 8 bpm</div></div>
+            </div>
+            <div class="result-metric">
+              <div><div class="metric-label">HRV</div><div class="metric-value">38→45</div><div class="metric-change down">↑ 7 ms</div></div>
+            </div>
+            <div class="result-btns">
+              <div class="btn-result-ai">⚙ View AI Advice</div>
+              <div class="btn-result-done">Done</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="screen-label">④ Back to ResultView</div>
+      <div class="screen-sublabel">Tap "Back" or Crown</div>
+    </div>
+  </div>
+
+  <div style="margin-top:28px;padding:16px 20px;background:rgba(123,79,203,0.08);border-radius:12px;border-left:3px solid #7B4FCB;max-width:720px;">
+    <div style="font-size:12px;font-weight:700;color:#a07ce8;margin-bottom:6px;">AI Feature Design Notes</div>
+    <div style="font-size:12px;color:rgba(255,255,255,0.6);line-height:1.7;">
+      • AI Default: <strong style="color:rgba(255,255,255,0.85)">Close</strong>，must be enabled in iOS Companion App Settings<br>
+      • Data sent: anonymous stats only (HR delta, HRV delta, mode, duration) — zero PII<br>
+      • Fallback Messages stored in App Bundle, network-independent, never crashes<br>
+      • All AI outputs always end with "⚙ AI-generated content, not medical advice"
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     FLOW D
+══════════════════════════════════════════════ -->
+<div id="flowD" class="flow-section">
+  <div class="flow-title" style="color:#FF9F0A">Flow D — No HealthKit Fallback</div>
+  <div class="flow-desc">
+    After denying or revoking HealthKit permission, the app silently degrades. The three core screens (Home / Breathing / Result)
+    share the same components, conditionally rendered by auth state — no separate error screens. No restart needed after permission changes.
+  </div>
+
+  <div class="screen-row">
+    <!-- Home simple -->
+    <div class="watch-wrap">
+      <div class="watch-body">
+        <div class="watch-screen">
+          <div class="status-bar"><span class="status-time">9:41</span></div>
+          <div class="home-content">
+            <div class="home-simple-note">✗ Health data not authorized</div>
+            <div class="screen-section-label">Breathing Modes</div>
+            <div class="mode-list">
+              <div class="mode-item"><span class="mode-name">4-7-8 Breathing</span><span class="mode-dur">4 min</span></div>
+              <div class="mode-item"><span class="mode-name">Box Breathing</span><span class="mode-dur">5 min</span></div>
+              <div class="mode-item"><span class="mode-name">Belly Breathing</span><span class="mode-dur">5 min</span></div>
+              <div class="mode-item"><span class="mode-name">Calming Breath</span><span class="mode-dur">3 min</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="screen-label" style="color:#FF9F0A">① HomeView（Simplified)</div>
+      <div class="screen-sublabel">Hides stress index · Breathing retained</div>
+    </div>
+
+    <div class="arrow"><svg width="28" height="16" viewBox="0 0 28 16" fill="none"><path d="M0 8H24M24 8L18 2M24 8L18 14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+
+    <!-- Breathing (same as full) -->
+    <div class="watch-wrap">
+      <div class="watch-body">
+        <div class="watch-screen">
+          <div class="status-bar"><span class="status-time">9:41</span></div>
+          <div class="breathing-content">
+            <div class="breath-circle-wrap">
+              <div class="breath-circle inhale"></div>
+              <span class="breath-count">4</span>
+            </div>
+            <div class="breath-phase">Inhale</div>
+            <div class="progress-bar-wrap">
+              <div class="progress-bar-fill blue" style="width:45%"></div>
+            </div>
+            <div class="cycle-count">Round 2 / 5</div>
+          </div>
+        </div>
+      </div>
+      <div class="screen-label">② BreathingView</div>
+      <div class="screen-sublabel">Full breathing animation · no HR display</div>
+    </div>
+
+    <div class="arrow"><svg width="28" height="16" viewBox="0 0 28 16" fill="none"><path d="M0 8H24M24 8L18 2M24 8L18 14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+
+    <!-- Result simple -->
+    <div class="watch-wrap">
+      <div class="watch-body">
+        <div class="watch-screen">
+          <div class="status-bar"><span class="status-time">9:46</span></div>
+          <div class="result-simple-content">
+            <div class="result-header">
+              <div class="result-check">✓</div>
+              <div class="result-title">Done!</div>
+            </div>
+            <div class="simple-metric-row">
+              <div class="simple-metric">
+                <div class="simple-metric-val">5/5</div>
+                <div class="simple-metric-lbl">Rounds Done</div>
+              </div>
+              <div class="simple-metric">
+                <div class="simple-metric-val">5m</div>
+                <div class="simple-metric-lbl">Duration</div>
+              </div>
+            </div>
+            <div class="tip-card">💡 Enable Health data<br>for personalized insights</div>
+            <div class="btn-result-done" style="margin-top:5px">Done</div>
+          </div>
+        </div>
+      </div>
+      <div class="screen-label" style="color:#FF9F0A">③ ResultView（Simplified)</div>
+      <div class="screen-sublabel">Hides HR / HRV / AI button</div>
+    </div>
+
+    <!-- Comparison box -->
+    <div style="display:flex;flex-direction:column;gap:12px;padding:0 20px;margin-top:10px;min-width:220px;">
+      <div style="font-size:11px;font-weight:700;color:var(--text-2);margin-bottom:4px;">Full vs Simplified</div>
+
+      <div style="background:rgba(255,255,255,0.04);border-radius:10px;padding:10px 14px;font-size:11px;line-height:1.8;color:rgba(255,255,255,0.55);">
+        <div style="color:rgba(255,255,255,0.85);font-weight:600;margin-bottom:4px;">HomeView</div>
+        <div>✅ 5  breathing modes (same on both modes)</div>
+        <div style="color:#FF453A">✗ Stress index (hidden in simplified)</div>
+        <div style="color:#FF453A">✗ HR / HRV readings (hidden in simplified)</div>
+      </div>
+
+      <div style="background:rgba(255,255,255,0.04);border-radius:10px;padding:10px 14px;font-size:11px;line-height:1.8;color:rgba(255,255,255,0.55);">
+        <div style="color:rgba(255,255,255,0.85);font-weight:600;margin-bottom:4px;">ResultView</div>
+        <div>✅ Rounds / Duration (same on both modes)</div>
+        <div style="color:#FF453A">✗ HR before/after (hidden in simplified)</div>
+        <div style="color:#FF453A">✗ HRV comparison (hidden in simplified)</div>
+        <div style="color:#FF453A">✗ AI Suggestion button (hidden in simplified)</div>
+        <div style="color:#FF9F0A">💡 Enable Health data prompt</div>
+      </div>
+    </div>
+  </div>
+
+  <div style="margin-top:28px;padding:16px 20px;background:rgba(255,159,10,0.08);border-radius:12px;border-left:3px solid #FF9F0A;max-width:720px;">
+    <div style="font-size:12px;font-weight:700;color:#FF9F0A;margin-bottom:6px;">Fallback Mode Design Notes</div>
+    <div style="font-size:12px;color:rgba(255,255,255,0.6);line-height:1.7;">
+      • After denying, app silently degrades — <strong style="color:rgba(255,255,255,0.85)">no errors or warnings shown</strong><br>
+      • Tip (💡) shown once, dismissible, non-recurring<br>
+      • The same SwiftUI View, using <code style="background:rgba(255,255,255,0.1);padding:1px 5px;border-radius:4px;">@Published var isAuthorized: Bool</code>  for conditional rendering<br>
+      • Once enabled on iPhone, the app uses <code style="background:rgba(255,255,255,0.1);padding:1px 5px;border-radius:4px;">HKHealthStore.getRequestStatusForAuthorization</code> auto-detected, no restart needed
+    </div>
+  </div>
+</div>
+
+<script>
+function showFlow(id) {
+  document.querySelectorAll('.flow-section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.flow-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  event.currentTarget.classList.add('active');
+}
+</script>
+</body>
+</html>
