@@ -446,9 +446,10 @@ The MVP uses a simplified compound model (v1.1 will introduce a machine learning
 │  ✗ 壓力指標隱藏                  │
 │  ✗ 心率顯示隱藏                  │
 │                                  │
-│  選擇練習模式：（5 種，完整）      │
+│  選擇練習模式：（4 種）            │
 │  ● 4-7-8 / Box / Diaphragmatic  │
-│  ● Resonance / Phys. Sigh       │
+│  ● Physiological Sigh            │
+│  （共鳴呼吸隱藏：需 HRV 數據）    │
 └──────────────────────────────────┘
          │ 選擇模式
          ▼
@@ -475,8 +476,9 @@ The MVP uses a simplified compound model (v1.1 will introduce a machine learning
 **涉及畫面**：HomeView → BreathingView → ResultView（三個畫面均為同一元件，依授權狀態條件渲染）
 **設計要點**：
 - 無 HealthKit 時，不彈出任何錯誤或警告（靜默降級）
+- 共鳴呼吸（Resonance）隱藏：該模式主打「HRV 提升」，沒有 HealthKit 就看不到效果，降級模式下只保留 4 種
 - ResultView 底部顯示一次性的引導提示（可關閉），建議開啟健康資料
-- 授權狀態改變後（例如使用者去設定開啟），App 無需重啟即自動偵測
+- 授權狀態改變後（例如使用者去設定開啟），App 無需重啟即自動偵測，共鳴呼吸也會自動恢復
 
 ---
 
