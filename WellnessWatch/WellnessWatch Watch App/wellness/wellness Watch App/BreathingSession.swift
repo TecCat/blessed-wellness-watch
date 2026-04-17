@@ -1,7 +1,6 @@
 // WellnessWatch Watch App/Models/BreathingSession.swift
 import Foundation
 import Combine
-import SwiftUI
 
 // MARK: - BreathingPhase
 
@@ -104,32 +103,6 @@ struct BreathingPattern: Identifiable {
     static let all: [BreathingPattern] = [
         .breathing478, .box, .diaphragmatic, .resonance, .physiologicalSigh
     ]
-
-    // MARK: Display helpers (used by HomeView ModeRow)
-
-    /// Accent color for the mode dot in HomeView
-    var accentColor: Color {
-        switch id {
-        case "4-7-8":               return Color(red: 0.200, green: 0.510, blue: 0.898) // Blue
-        case "box":                 return Color(red: 0.482, green: 0.310, blue: 0.796) // Purple
-        case "diaphragmatic":       return Color(red: 0.184, green: 0.737, blue: 0.698) // Teal
-        case "resonance":           return Color(red: 0.188, green: 0.820, blue: 0.345) // Green
-        case "physiological-sigh":  return Color(red: 0.200, green: 0.510, blue: 0.898) // Blue
-        default:                    return .white
-        }
-    }
-
-    /// Short effect description shown under mode name in HomeView
-    var effectLabel: String {
-        switch id {
-        case "4-7-8":               return "快速放鬆・助眠"
-        case "box":                 return "專注・抗壓"
-        case "diaphragmatic":       return "日常減壓"
-        case "resonance":           return "提升 HRV"
-        case "physiological-sigh":  return "急速平靜・雙吸法"
-        default:                    return ""
-        }
-    }
 }
 
 // MARK: - BreathingSession
