@@ -153,6 +153,17 @@ let calmBackground = Color(red: 0.05, green: 0.05, blue: 0.1) // 背景
 - 語氣：溫暖、鼓勵、帶科學感
 - 回應時間目標：< 3 秒
 
+**🔑 API Key 安全（後端開發必讀）**
+- `ANTHROPIC_API_KEY` 只能存在 `backend/.env`，**絕對不寫進程式碼**
+- `backend/.env` 已加入 `.gitignore`，不得手動 commit
+- 程式碼讀取方式：`os.environ.get("ANTHROPIC_API_KEY")`（搭配 `python-dotenv`）
+- 提供 `backend/.env.example`（值為空）供新開發者參考：
+  ```
+  ANTHROPIC_API_KEY=
+  ```
+- 每次 `git push` 前執行：`git log -p --all | grep -i "sk-ant-"` 確認無洩漏
+- Swift 端不需要 API key（透過後端代理），**Watch App 程式碼中禁止出現任何 key**
+
 **App Store 審核必備**
 - HealthKit 使用說明（Privacy - Health Share Usage Description）必填
 - 描述中不得出現「治療」「診斷」「醫療」等醫療聲稱
@@ -222,4 +233,4 @@ let calmBackground = Color(red: 0.05, green: 0.05, blue: 0.1) // 背景
 
 ---
 
-*最後更新：2026-03-24*
+*最後更新：2026-04-18*
