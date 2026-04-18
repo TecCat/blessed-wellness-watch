@@ -1,6 +1,7 @@
 // WellnessWatch Watch App/Models/BreathingSession.swift
 import Foundation
 import Combine
+import SwiftUI
 
 // MARK: - BreathingPhase
 
@@ -62,6 +63,7 @@ struct BreathingPattern: Identifiable {
             PhaseStep(phase: .inhale, duration: 4),
             PhaseStep(phase: .hold,   duration: 4),
             PhaseStep(phase: .exhale, duration: 4),
+            PhaseStep(phase: .rest,   duration: 4),   // ← 加這行
         ],
         totalDurationMinutes: 5
     )
@@ -103,6 +105,38 @@ struct BreathingPattern: Identifiable {
     static let all: [BreathingPattern] = [
         .breathing478, .box, .diaphragmatic, .resonance, .physiologicalSigh
     ]
+
+    // MARK: Display helpers (used by HomeView ModeRow)
+
+    /// Accent color for the mode dot in HomeView
+    var accentColor: Color {
+        switch id {
+        case "4-7-8":               return Color(red: 0.200, green: 0.510, blue: 0.898) // Blue
+        case "box":                 return Color(red: 0.482, green: 0.310, blue: 0.796) // Purple
+        case "diaphragmatic":       return Color(red: 0.184, green: 0.737, blue: 0.698) // Teal
+        case "resonance":           return Color(red: 0.188, green: 0.820, blue: 0.345) // Green
+        case "physiological-sigh":  return Color(red: 0.200, green: 0.510, blue: 0.898) // Blue
+        default:                    return .white
+        }
+    }
+
+    /// Short effect description shown under mode name in HomeView
+    var effectLabel: String {
+        switch id {
+        case "4-7-8":               return "快速放鬆・助眠"
+        case "box":                 return "專注・抗壓"
+        case "diaphragmatic":       return "日常減壓"
+        case "resonance":           return "提升 HRV"
+        case "physiological-sigh":  return "急速平靜・雙吸法"
+        default:                    return ""
+        }
+    }
+
+    enum AnimationStyle { case circle, box }
+
+    var animationStyle: AnimationStyle {
+        id == "box" ? .box : .circle
+    }
 }
 
 // MARK: - BreathingSession
@@ -117,6 +151,7 @@ final class BreathingSession: ObservableObject {
     @Published private(set) var completedCycles: Int = 0
     @Published private(set) var isRunning: Bool = false
     @Published private(set) var isCompleted: Bool = false  // true = natural finish
+    @Published private(set) var phaseProgress: Double = 0  // 0.0 – 1.0 within current phase
 
     // MARK: Pattern info
     private(set) var pattern: BreathingPattern = .box
@@ -160,6 +195,7 @@ final class BreathingSession: ObservableObject {
         totalSecondsElapsed += 1
         phaseSecondsRemaining -= 1
         progress = min(totalSecondsElapsed / totalSessionSeconds, 1.0)
+        phaseProgress = 1.0 - (phaseSecondsRemaining / currentPhaseDuration)
 
         if phaseSecondsRemaining <= 0 {
             // Advance to next step
@@ -187,6 +223,7 @@ final class BreathingSession: ObservableObject {
         currentPhaseDuration = step.duration
         phaseSecondsRemaining = step.duration
         countdownText = formatted(step.duration)
+        phaseProgress = 0
     }
 
     private func formatted(_ seconds: Double) -> String {

@@ -11,6 +11,80 @@ enum BreathingColors {
     static let background = Color(red: 0.051, green: 0.051, blue: 0.102)  // #0D0D1A
 }
 
+// MARK: - BoxAnimationView
+
+struct BoxAnimationView: View {
+    let phase: BreathingPhase
+    let phaseProgress: Double   // 0.0 – 1.0 within current phase
+    let countdownText: String
+
+    private let size: CGFloat = 100
+    private let lineWidth: CGFloat = 5
+    private let corner: CGFloat = 18
+
+    var body: some View {
+        ZStack {
+            // Background track
+            RoundedRectangle(cornerRadius: corner)
+                .stroke(Color.white.opacity(0.10), lineWidth: lineWidth)
+                .frame(width: size, height: size)
+
+            // Completed segments (dim)
+            if phaseSegmentStart > 0 {
+                RoundedRectangle(cornerRadius: corner)
+                    .trim(from: 0, to: phaseSegmentStart)
+                    .stroke(
+                        Color.white.opacity(0.22),
+                        style: StrokeStyle(lineWidth: lineWidth, lineCap: .round)
+                    )
+                    .frame(width: size, height: size)
+                    .rotationEffect(.degrees(-90))
+            }
+
+            // Current phase animated segment
+            RoundedRectangle(cornerRadius: corner)
+                .trim(from: phaseSegmentStart,
+                      to: phaseSegmentStart + 0.25 * phaseProgress)
+                .stroke(
+                    phaseColor,
+                    style: StrokeStyle(lineWidth: lineWidth + 1.5, lineCap: .round)
+                )
+                .frame(width: size, height: size)
+                .rotationEffect(.degrees(-90))
+                .animation(.linear(duration: 1), value: phaseProgress)
+
+            // Countdown number
+            Text(countdownText)
+                .font(.system(size: 28, weight: .light, design: .rounded))
+                .foregroundStyle(.white)
+                .contentTransition(.numericText())
+                .animation(.easeInOut(duration: 0.2), value: countdownText)
+        }
+    }
+
+    private var phaseIndex: Int {
+        switch phase {
+        case .inhale:  return 0
+        case .hold:    return 1
+        case .exhale:  return 2
+        case .rest:    return 3
+        default:       return 0
+        }
+    }
+
+    private var phaseSegmentStart: Double { Double(phaseIndex) * 0.25 }
+
+    private var phaseColor: Color {
+        switch phase {
+        case .inhale:  return BreathingColors.inhale
+        case .hold:    return BreathingColors.hold
+        case .exhale:  return BreathingColors.exhale
+        case .rest:    return BreathingColors.hold
+        default:       return .white
+        }
+    }
+}
+
 // MARK: - BreathingView
 
 struct BreathingView: View {
@@ -38,7 +112,7 @@ struct BreathingView: View {
             BreathingColors.background.ignoresSafeArea()
 
             VStack(spacing: 10) {
-                breathingCircle
+                breathingAnimation
                 phaseLabel
                 progressSection
                 stopButton
@@ -66,30 +140,34 @@ struct BreathingView: View {
 
     // MARK: Subviews
 
-    private var breathingCircle: some View {
-        ZStack {
-            // Filled glow
-            Circle()
-                .fill(circleColor.opacity(0.18))
-                .frame(width: 110, height: 110)
-                .scaleEffect(circleScale)
-
-            // Stroke ring
-            Circle()
-                .strokeBorder(circleColor, lineWidth: 2.5)
-                .frame(width: 110, height: 110)
-                .scaleEffect(circleScale)
-
-            // Countdown number (PRD §7.3: 28 pt light rounded)
-            Text(session.countdownText)
-                .font(.system(size: 28, weight: .light, design: .rounded))
-                .foregroundStyle(.white)
-                .contentTransition(.numericText())
-                .animation(.easeInOut(duration: 0.2), value: session.countdownText)
+    @ViewBuilder
+    private var breathingAnimation: some View {
+        if pattern.animationStyle == .box {
+            BoxAnimationView(
+                phase: session.currentPhase,
+                phaseProgress: session.phaseProgress,
+                countdownText: session.countdownText
+            )
+        } else {
+            // 原有圓圈 UI
+            ZStack {
+                Circle()
+                    .fill(circleColor.opacity(0.18))
+                    .frame(width: 110, height: 110)
+                    .scaleEffect(circleScale)
+                Circle()
+                    .strokeBorder(circleColor, lineWidth: 2.5)
+                    .frame(width: 110, height: 110)
+                    .scaleEffect(circleScale)
+                Text(session.countdownText)
+                    .font(.system(size: 28, weight: .light, design: .rounded))
+                    .foregroundStyle(.white)
+                    .contentTransition(.numericText())
+                    .animation(.easeInOut(duration: 0.2), value: session.countdownText)
+            }
+            .animation(.easeInOut(duration: session.currentPhaseDuration), value: circleScale)
+            .animation(.easeInOut(duration: 0.5), value: circleColor)
         }
-        // Circle scale+color animate over the full phase duration
-        .animation(.easeInOut(duration: session.currentPhaseDuration), value: circleScale)
-        .animation(.easeInOut(duration: 0.5), value: circleColor)
     }
 
     private var phaseLabel: some View {
