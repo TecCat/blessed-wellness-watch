@@ -185,9 +185,11 @@ struct BreathingView: View {
                 .frame(width: 130)
                 .animation(.linear(duration: 1), value: session.progress)
 
-            Text("完成 \(session.completedCycles) / \(session.totalCycles) 輪")
+            Text("剩餘 \(session.timeRemainingText)")
                 .font(.caption2)
                 .foregroundStyle(.white.opacity(0.45))
+                .contentTransition(.numericText())
+                .animation(.linear(duration: 1), value: session.timeRemainingText)
         }
     }
 

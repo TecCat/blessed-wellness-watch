@@ -1,11 +1,52 @@
 // WellnessWatch Watch App/Views/PreviewView.swift
 import SwiftUI
 
+// MARK: - PaceOption
+
+enum PaceOption: CaseIterable, Equatable {
+    case slow, standard, fast
+
+    var label: String {
+        switch self {
+        case .slow:     return "慢"
+        case .standard: return "標準"
+        case .fast:     return "快"
+        }
+    }
+
+    var icon: String {
+        switch self {
+        case .slow:     return "🐢"
+        case .standard: return "◎"
+        case .fast:     return "🐇"
+        }
+    }
+
+    var multiplier: Double {
+        switch self {
+        case .slow:     return 1.5
+        case .standard: return 1.0
+        case .fast:     return 0.75
+        }
+    }
+
+    static func recommend(from hr: Double) -> PaceOption {
+        if hr > 80 { return .slow }
+        if hr < 65 { return .fast }
+        return .standard
+    }
+}
+
+// MARK: - PreviewView
+
 struct PreviewView: View {
 
     let pattern: BreathingPattern
 
+    @StateObject private var healthKit = HealthKitService()
     @State private var selectedMinutes: Int
+    @State private var selectedPace: PaceOption = .standard
+    @State private var assessmentPicked: Bool = false
 
     init(pattern: BreathingPattern) {
         self.pattern = pattern
@@ -17,32 +58,39 @@ struct PreviewView: View {
     var body: some View {
         ScrollView {
             VStack(spacing: 10) {
-                // Mode header
-                HStack(spacing: 6) {
+
+                // Effect label
+                HStack(spacing: 5) {
                     Circle()
                         .fill(pattern.accentColor)
-                        .frame(width: 8, height: 8)
+                        .frame(width: 7, height: 7)
                     Text(pattern.effectLabel)
                         .font(.system(size: 11))
-                        .foregroundStyle(.white.opacity(0.55))
+                        .foregroundStyle(.white.opacity(0.5))
                 }
 
-                // Phase rhythm row
+                // Phase rhythm (scaled)
                 rhythmRow
 
+                Divider().overlay(.white.opacity(0.1))
+
+                // Pace section
+                paceSection
+
+                Divider().overlay(.white.opacity(0.1))
+
                 // Duration picker
-                VStack(spacing: 4) {
+                VStack(spacing: 3) {
                     Text("練習時間")
                         .font(.system(size: 11))
-                        .foregroundStyle(.white.opacity(0.45))
-
+                        .foregroundStyle(.white.opacity(0.4))
                     Picker("", selection: $selectedMinutes) {
-                        ForEach(availableMinutes, id: \.self) { min in
+                        ForEach([2, 3, 4, 5, 7, 10, 15, 20], id: \.self) { min in
                             Text("\(min) 分鐘").tag(min)
                         }
                     }
                     .pickerStyle(.wheel)
-                    .frame(height: 80)
+                    .frame(height: 75)
                 }
 
                 // Start button
@@ -54,50 +102,159 @@ struct PreviewView: View {
                         .foregroundStyle(.white)
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, 9)
-                        .background(
-                            pattern.accentColor,
-                            in: RoundedRectangle(cornerRadius: 12)
-                        )
+                        .background(pattern.accentColor,
+                                    in: RoundedRectangle(cornerRadius: 12))
                 }
                 .buttonStyle(.plain)
-                .padding(.top, 4)
+                .padding(.top, 2)
             }
             .padding(.horizontal, 6)
             .padding(.vertical, 4)
         }
         .navigationTitle(pattern.name)
+        .task {
+            await healthKit.requestAuthorizationIfNeeded()
+            if healthKit.isAuthorized {
+                healthKit.startHeartRateMonitoring()
+                await healthKit.fetchLatestHRV()
+                // Auto-set pace from HR once data arrives
+                if healthKit.currentHeartRate > 0 && !assessmentPicked {
+                    selectedPace = PaceOption.recommend(from: healthKit.currentHeartRate)
+                }
+            }
+        }
     }
 
-    // MARK: Subviews
+    // MARK: Pace Section
+
+    @ViewBuilder
+    private var paceSection: some View {
+        VStack(spacing: 6) {
+            if healthKit.isAuthorized && healthKit.currentHeartRate > 0 {
+                // HealthKit mode: show HR source + auto recommendation
+                HStack(spacing: 4) {
+                    Image(systemName: "heart.fill")
+                        .font(.system(size: 9))
+                        .foregroundStyle(.red.opacity(0.8))
+                    Text("\(Int(healthKit.currentHeartRate)) bpm → \(selectedPace.label)節奏")
+                        .font(.system(size: 10))
+                        .foregroundStyle(.white.opacity(0.5))
+                }
+            } else if !assessmentPicked {
+                // Fallback: self-assessment
+                Text("你現在的狀態？")
+                    .font(.system(size: 12, weight: .medium))
+                    .foregroundStyle(.white.opacity(0.85))
+
+                HStack(spacing: 8) {
+                    assessmentButton("😰", pace: .slow,  label: "緊繃")
+                    assessmentButton("😐", pace: .standard, label: "一般")
+                    assessmentButton("😊", pace: .fast,  label: "放鬆")
+                }
+            } else {
+                Text("節奏已設定")
+                    .font(.system(size: 10))
+                    .foregroundStyle(.white.opacity(0.4))
+            }
+
+            // Always-visible pace override buttons
+            paceOverrideRow
+        }
+    }
+
+    private func assessmentButton(_ emoji: String, pace: PaceOption, label: String) -> some View {
+        Button {
+            selectedPace = pace
+            assessmentPicked = true
+        } label: {
+            VStack(spacing: 2) {
+                Text(emoji).font(.title3)
+                Text(label)
+                    .font(.system(size: 9))
+                    .foregroundStyle(.white.opacity(0.55))
+            }
+            .frame(maxWidth: .infinity)
+            .padding(.vertical, 5)
+            .background(
+                selectedPace == pace && assessmentPicked
+                    ? pattern.accentColor.opacity(0.25)
+                    : Color.white.opacity(0.07),
+                in: RoundedRectangle(cornerRadius: 8)
+            )
+        }
+        .buttonStyle(.plain)
+    }
+
+    private var paceOverrideRow: some View {
+        HStack(spacing: 5) {
+            ForEach(PaceOption.allCases, id: \.self) { pace in
+                Button {
+                    selectedPace = pace
+                    assessmentPicked = true
+                } label: {
+                    HStack(spacing: 3) {
+                        Text(pace.icon).font(.system(size: 10))
+                        Text(pace.label)
+                            .font(.system(size: 10, weight: selectedPace == pace ? .semibold : .regular))
+                    }
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 5)
+                    .background(
+                        selectedPace == pace
+                            ? pattern.accentColor.opacity(0.3)
+                            : Color.white.opacity(0.07),
+                        in: RoundedRectangle(cornerRadius: 8)
+                    )
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 8)
+                            .strokeBorder(
+                                selectedPace == pace
+                                    ? pattern.accentColor.opacity(0.6)
+                                    : Color.clear,
+                                lineWidth: 1
+                            )
+                    )
+                }
+                .buttonStyle(.plain)
+            }
+        }
+    }
+
+    // MARK: Rhythm Row (scaled durations)
 
     private var rhythmRow: some View {
         HStack(spacing: 0) {
-            ForEach(Array(pattern.steps.enumerated()), id: \.offset) { _, step in
+            ForEach(Array(scaledSteps.enumerated()), id: \.offset) { _, step in
                 VStack(spacing: 2) {
                     Text(step.phase.label)
                         .font(.system(size: 9))
-                        .foregroundStyle(.white.opacity(0.45))
-                    Text("\(Int(step.duration))s")
-                        .font(.system(size: 11, weight: .semibold))
-                        .foregroundStyle(.white.opacity(0.85))
+                        .foregroundStyle(.white.opacity(0.4))
+                    Text(String(format: "%.0fs", step.duration))
+                        .font(.system(size: 12, weight: .semibold))
+                        .foregroundStyle(.white.opacity(0.9))
                 }
                 .frame(maxWidth: .infinity)
             }
         }
-        .padding(.horizontal, 8)
-        .padding(.vertical, 6)
-        .background(.white.opacity(0.07), in: RoundedRectangle(cornerRadius: 10))
+        .padding(.horizontal, 6)
+        .padding(.vertical, 7)
+        .background(.white.opacity(0.06), in: RoundedRectangle(cornerRadius: 10))
+        .animation(.easeInOut(duration: 0.2), value: selectedPace)
     }
 
     // MARK: Helpers
 
-    private var availableMinutes: [Int] { [2, 3, 4, 5, 7, 10, 15, 20] }
+    private var scaledSteps: [PhaseStep] {
+        pattern.steps.map {
+            PhaseStep(phase: $0.phase, duration: ($0.duration * selectedPace.multiplier).rounded())
+        }
+    }
 
     private var adjustedPattern: BreathingPattern {
         BreathingPattern(
             id: pattern.id,
             name: pattern.name,
-            steps: pattern.steps,
+            steps: scaledSteps,
             totalDurationMinutes: selectedMinutes
         )
     }
@@ -105,8 +262,10 @@ struct PreviewView: View {
 
 // MARK: - Preview
 
-#Preview {
-    NavigationStack {
-        PreviewView(pattern: .box)
-    }
+#Preview("4-7-8 Standard") {
+    NavigationStack { PreviewView(pattern: .breathing478) }
+}
+
+#Preview("Box Breathing") {
+    NavigationStack { PreviewView(pattern: .box) }
 }

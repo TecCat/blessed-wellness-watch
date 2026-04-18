@@ -1,12 +1,12 @@
 # WellnessWatch — MVP Product Requirements Document
 
-> **Version**: 1.1
+> **Version**: 1.2
 > **Status**: ⚠️ Review Ready — 待 Product Owner 確認後轉為 Approved
 > **Target Platform**: watchOS 7+ · iOS 16+
 > **Planned Launch**: Week 14–15 (TestFlight Beta: Week 10)
 > **Author**: [Product Owner]
 > **Reviewers**: [Tech Lead / Design Lead]
-> **Last updated**: 2026-03-26
+> **Last updated**: 2026-04-18
 
 ---
 
@@ -72,7 +72,7 @@ The primary target audience is urban professionals aged 25–45 who own an Apple
 
 | # | Feature Module | Description | Priority |
 |---|---------------|-------------|----------|
-| 1 | Five Breathing Modes | 4-7-8 / Box / Diaphragmatic / Resonance / Physiological Sigh — with full animation and haptic guidance | **P0 — Core** |
+| 1 | Five Breathing Modes | 4-7-8 / Box / Diaphragmatic / Resonance / Physiological Sigh — with full animation, haptic guidance, and adaptive pacing (slow/standard/fast presets) | **P0 — Core** |
 | 2 | HealthKit Integration | Read heart rate + HRV; calculate stress level; before/after comparison | **P0 — Core** |
 | 3 | Haptic Guidance System | Distinct vibration patterns for inhale / hold / exhale; usable without looking at screen | **P0 — Core** |
 | 4 | Session Results Screen | Post-session heart rate change, HRV change, and completed cycles | **P1 — Important** |
@@ -111,7 +111,44 @@ The primary target audience is urban professionals aged 25–45 who own an Apple
 - Animation uses `.easeInOut` with duration synchronized to the current breathing phase.
 - Color transitions: Inhale Blue (`#3382E5`) → Hold Purple (`#7B4FCB`) → Exhale Teal (`#2FBCB2`) → Rest Gray.
 - Countdown timer displayed at the center of the circle; font size 28 pt, `.rounded` design.
-- Progress bar shows overall session progress (current cycle / total cycles).
+- Progress bar shows overall session progress. Remaining time displayed below in MM:SS format (e.g., "剩餘 3:42").
+- Box Breathing uses a unique square-path animation: a glowing stroke traces the perimeter of a rounded rectangle, advancing 25% per phase (clockwise: inhale → hold → exhale → rest). Other modes use the circular animation.
+
+#### 4.1.4 Adaptive Pacing Engine (P1)
+
+**Purpose**: Adapt breathing rhythm speed to the user's current physiological or self-reported stress state, increasing practice effectiveness and comfort.
+
+**Pace Presets**
+
+| Preset | Multiplier | Use Case | Example (4-7-8) |
+|--------|-----------|----------|-----------------|
+| 🐢 慢 (Slow) | ×1.5 | High stress, post-exercise | 6 – 10.5 – 12s |
+| ◎ 標準 (Standard) | ×1.0 | Normal state | 4 – 7 – 8s |
+| 🐇 快 (Fast) | ×0.75 | Already calm, advanced practice | 3 – 5.25 – 6s |
+
+**Selection Logic (PreviewView)**
+
+```
+if HealthKit authorized AND currentHeartRate > 0:
+    → Auto-recommend pace based on HR (display source bpm)
+      HR > 80 bpm  → Slow
+      HR 65–80 bpm → Standard
+      HR < 65 bpm  → Fast
+    → User can override
+
+else (HealthKit unavailable or not authorized):
+    → Show self-assessment prompt:
+      😰 偏緊張 → Slow
+      😐 一般   → Standard
+      😊 放鬆   → Fast
+    → User can override after selection
+```
+
+**Rhythm Preview**: PreviewView shows actual phase durations after pace scaling before the user starts, so they know exactly what to expect.
+
+**Implementation**: Phase durations are scaled at `BreathingPattern` construction time in `PreviewView.adjustedPattern`. Multiplier applied to each `PhaseStep.duration`.
+
+---
 
 #### 4.1.3 Haptic Guidance Requirements
 
@@ -128,8 +165,8 @@ The primary target audience is urban professionals aged 25–45 who own an Apple
 #### 4.2.1 Data Reading Specifications
 
 - **Types read**: `heartRate`, `heartRateVariabilitySDNN`, `restingHeartRate`.
-- **Authorization timing**: Requested when the user first taps "Start Session" — not on app launch.
-- **Graceful degradation**: If authorization is denied, breathing guidance continues fully; biometric displays are hidden.
+- **Authorization timing**: Requested when the user first opens PreviewView — not on app launch.
+- **Graceful degradation**: If authorization is denied, breathing guidance continues fully; biometric displays are hidden. PreviewView falls back to a self-assessment prompt (😰/😐/😊) to infer user state and recommend pacing — personalization remains available without biometric data.
 - **Heart rate refresh rate**: Continuous via `HKAnchoredObjectQuery` (updated each second during sessions).
 - **HRV source**: Most recent SDNN sample within the past 7 days.
 

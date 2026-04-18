@@ -151,6 +151,7 @@ final class BreathingSession: ObservableObject {
     @Published private(set) var completedCycles: Int = 0
     @Published private(set) var isRunning: Bool = false
     @Published private(set) var isCompleted: Bool = false  // true = natural finish
+    @Published private(set) var timeRemainingText: String = "0:00"
     @Published private(set) var phaseProgress: Double = 0  // 0.0 – 1.0 within current phase
 
     // MARK: Pattern info
@@ -177,6 +178,7 @@ final class BreathingSession: ObservableObject {
         applyStep(first)
         progress = 0
         isRunning = true
+        updateTimeRemaining()
 
         timer = Timer.publish(every: 1.0, on: .main, in: .common)
             .autoconnect()
@@ -193,6 +195,7 @@ final class BreathingSession: ObservableObject {
 
     private func tick() {
         totalSecondsElapsed += 1
+        updateTimeRemaining()
         phaseSecondsRemaining -= 1
         progress = min(totalSecondsElapsed / totalSessionSeconds, 1.0)
         phaseProgress = 1.0 - (phaseSecondsRemaining / currentPhaseDuration)
@@ -228,5 +231,12 @@ final class BreathingSession: ObservableObject {
 
     private func formatted(_ seconds: Double) -> String {
         String(max(0, Int(ceil(seconds))))
+    }
+
+    private func updateTimeRemaining() {
+        let remaining = max(0, totalSessionSeconds - totalSecondsElapsed)
+        let mins = Int(remaining) / 60
+        let secs = Int(remaining) % 60
+        timeRemainingText = String(format: "%d:%02d", mins, secs)
     }
 }
