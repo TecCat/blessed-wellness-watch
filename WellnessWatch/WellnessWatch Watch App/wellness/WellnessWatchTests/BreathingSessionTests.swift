@@ -2,10 +2,12 @@
 // Module: wellness_Watch_App  (spaces → underscores)
 
 import XCTest
+import SwiftUI
 @testable import wellness_Watch_App
 
 // MARK: - BreathingPatternTests
 
+@MainActor
 final class BreathingPatternTests: XCTestCase {
 
     // MARK: Cycle duration
@@ -87,6 +89,7 @@ final class BreathingPatternTests: XCTestCase {
 
 // MARK: - BreathingSessionTests
 
+@MainActor
 final class BreathingSessionTests: XCTestCase {
 
     var sut: BreathingSession!
@@ -143,6 +146,7 @@ final class BreathingSessionTests: XCTestCase {
 
 // MARK: - StressLevelTests
 
+@MainActor
 final class StressLevelTests: XCTestCase {
 
     func test_relaxedEmoji() {
