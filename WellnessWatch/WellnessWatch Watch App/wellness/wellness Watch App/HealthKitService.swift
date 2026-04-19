@@ -60,7 +60,11 @@ final class HealthKitService: ObservableObject {
     // MARK: Authorization (PRD §4.2.1 — request on first session tap, not on launch)
 
     func requestAuthorizationIfNeeded() async {
+        // Guard 1: HealthKit must be available on this device
         guard HKHealthStore.isHealthDataAvailable() else { return }
+        // Guard 2: NSHealthShareUsageDescription must exist in Info.plist
+        // (missing = HealthKit capability not added → skip to avoid crash)
+        guard Bundle.main.object(forInfoDictionaryKey: "NSHealthShareUsageDescription") != nil else { return }
         do {
             try await store.requestAuthorization(toShare: [], read: typesToRead)
             let status = store.authorizationStatus(for: HKQuantityType(.heartRate))
