@@ -10,11 +10,15 @@ import SwiftData
 
 @main
 struct wellness_Watch_AppApp: App {
+
+    @StateObject private var nav = AppNav()
+
     var body: some Scene {
         WindowGroup {
-            NavigationStack {
+            NavigationStack(path: $nav.path) {
                 HomeView()
             }
+            .environmentObject(nav)
         }
         .modelContainer(for: SessionRecord.self)
     }

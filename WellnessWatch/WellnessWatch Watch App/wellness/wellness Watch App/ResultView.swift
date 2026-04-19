@@ -13,6 +13,7 @@ struct ResultView: View {
     let paceLabel: String
     let startedAt: Date
 
+    @EnvironmentObject private var nav: AppNav
     @Environment(\.modelContext) private var modelContext
     @State private var sessionSaved = false
 
@@ -56,8 +57,8 @@ struct ResultView: View {
                         .padding(.horizontal, 4)
                 }
 
-                // Done button
-                Button(action: onDone) {
+                // Done button — clears NavigationStack → back to HomeView
+                Button(action: { nav.popToRoot() }) {
                     Text("完成")
                         .font(.system(size: 14, weight: .semibold))
                         .foregroundStyle(.white)
@@ -143,6 +144,7 @@ struct ResultView: View {
             startedAt: Date()
         )
     }
+    .environmentObject(AppNav())
     .modelContainer(for: SessionRecord.self, inMemory: true)
 }
 
@@ -159,5 +161,6 @@ struct ResultView: View {
             startedAt: Date()
         )
     }
+    .environmentObject(AppNav())
     .modelContainer(for: SessionRecord.self, inMemory: true)
 }

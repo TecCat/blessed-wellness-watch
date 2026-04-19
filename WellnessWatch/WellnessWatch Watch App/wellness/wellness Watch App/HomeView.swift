@@ -138,4 +138,5 @@ struct ModeRow: View {
     NavigationStack {
         HomeView()
     }
+    .environmentObject(AppNav())
 }
