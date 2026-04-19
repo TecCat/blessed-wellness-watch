@@ -32,6 +32,15 @@ struct HomeView: View {
         }
         .navigationTitle("呼吸練習")
         .toolbar {
+            ToolbarItem(placement: .topBarLeading) {
+                NavigationLink {
+                    ReminderView()
+                } label: {
+                    Image(systemName: "bell.fill")
+                        .font(.system(size: 14))
+                        .foregroundStyle(.white.opacity(0.7))
+                }
+            }
             ToolbarItem(placement: .topBarTrailing) {
                 NavigationLink {
                     HistoryView()

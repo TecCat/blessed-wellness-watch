@@ -24,6 +24,17 @@ struct HistoryView: View {
             }
         }
         .navigationTitle("練習紀錄")
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                NavigationLink {
+                    StatsView()
+                } label: {
+                    Image(systemName: "chart.bar.fill")
+                        .font(.system(size: 14))
+                        .foregroundStyle(.white.opacity(0.7))
+                }
+            }
+        }
         .confirmationDialog("確定清除所有紀錄？", isPresented: $showClearConfirm) {
             Button("清除全部", role: .destructive) {
                 for record in records {
