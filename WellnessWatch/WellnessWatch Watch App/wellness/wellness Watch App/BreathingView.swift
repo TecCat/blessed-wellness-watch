@@ -102,6 +102,7 @@ struct BreathingView: View {
 
     @StateObject private var session = BreathingSession()
 
+    @State private var hasStarted = false          // guard against re-start on re-appear
     @State private var circleScale: CGFloat = 0.6
     @State private var circleColor: Color = BreathingColors.inhale
     @State private var showStopAlert = false
@@ -124,6 +125,8 @@ struct BreathingView: View {
             .padding(.horizontal, 8)
         }
         .onAppear {
+            guard !hasStarted else { return }
+            hasStarted = true
             startSession()
         }
         .onChange(of: session.currentPhase) { _, phase in
