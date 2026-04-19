@@ -102,6 +102,7 @@ struct BreathingView: View {
     @State private var circleScale: CGFloat = 0.6
     @State private var circleColor: Color = BreathingColors.inhale
     @State private var showStopAlert = false
+    @State private var showResult = false
 
     @Environment(\.dismiss) private var dismiss
 
@@ -127,15 +128,27 @@ struct BreathingView: View {
         }
         .onChange(of: session.isRunning) { _, running in
             guard !running else { return }
-            if session.isCompleted { HapticService.shared.playCompletion() }
-            onSessionEnd?(session.completedCycles, session.isCompleted)
-            dismiss()
+            HapticService.shared.playCompletion()
+            showResult = true
         }
         .alert("確定要結束練習？", isPresented: $showStopAlert) {
             Button("繼續", role: .cancel) { }
             Button("結束", role: .destructive) { session.stop() }
         }
         .navigationBarBackButtonHidden(true)
+        .navigationDestination(isPresented: $showResult) {
+            ResultView(
+                pattern: pattern,
+                completedCycles: session.completedCycles,
+                totalCycles: session.totalCycles,
+                isCompleted: session.isCompleted,
+                elapsedSeconds: session.totalSecondsElapsed,
+                onDone: {
+                    showResult = false
+                    dismiss()
+                }
+            )
+        }
     }
 
     // MARK: Subviews

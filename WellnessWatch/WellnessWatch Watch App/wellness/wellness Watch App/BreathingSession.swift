@@ -162,7 +162,7 @@ final class BreathingSession: ObservableObject {
     private var timer: AnyCancellable?
     private var stepIndex: Int = 0
     private var phaseSecondsRemaining: Double = 0
-    private var totalSecondsElapsed: Double = 0
+    @Published private(set) var totalSecondsElapsed: Double = 0
     private var totalSessionSeconds: Double { Double(pattern.totalDurationMinutes * 60) }
 
     // MARK: Control
