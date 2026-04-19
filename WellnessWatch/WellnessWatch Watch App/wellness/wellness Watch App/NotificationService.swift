@@ -13,6 +13,10 @@ final class NotificationService {
     // MARK: - Authorization
 
     func requestAuthorization() async -> Bool {
+        // Simulator does not support notifications — always return true so UI works
+        #if targetEnvironment(simulator)
+        return true
+        #else
         let center = UNUserNotificationCenter.current()
         do {
             return try await center.requestAuthorization(options: [.alert, .sound])
@@ -20,6 +24,7 @@ final class NotificationService {
             AppLogger.error("Notification auth failed: \(error)", category: "notification")
             return false
         }
+        #endif
     }
 
     // MARK: - Schedule

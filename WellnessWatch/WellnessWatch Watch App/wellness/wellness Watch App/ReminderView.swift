@@ -56,9 +56,12 @@ struct ReminderView: View {
     // MARK: - Helpers
 
     private var statusText: String {
-        enabled
-            ? "每天 \(String(format: "%02d:%02d", hour, minute)) 提醒練習"
-            : "未設定提醒"
+        guard enabled else { return "未設定提醒" }
+        #if targetEnvironment(simulator)
+        return "每天 \(String(format: "%02d:%02d", hour, minute)) 提醒練習\n(模擬器不推送通知，實機有效)"
+        #else
+        return "每天 \(String(format: "%02d:%02d", hour, minute)) 提醒練習"
+        #endif
     }
 
     private func handleToggle(_ on: Bool) {
