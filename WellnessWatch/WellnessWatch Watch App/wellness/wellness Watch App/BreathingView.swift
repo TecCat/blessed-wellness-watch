@@ -92,6 +92,8 @@ struct BreathingView: View {
     let pattern: BreathingPattern
     let selectedPace: PaceOption
 
+    @EnvironmentObject private var nav: AppNav
+
     /// Invoked when the session ends (natural completion OR early stop).
     /// - Parameters:
     ///   - completedCycles: how many full cycles finished
@@ -140,6 +142,9 @@ struct BreathingView: View {
         .alert("確定要結束練習？", isPresented: $showStopAlert) {
             Button("繼續", role: .cancel) { }
             Button("結束", role: .destructive) { session.stop() }
+        }
+        .onChange(of: nav.shouldPopToRoot) { _, should in
+            if should { showResult = false; dismiss() }
         }
         .navigationBarBackButtonHidden(true)
         .navigationDestination(isPresented: $showResult) {

@@ -3,10 +3,15 @@ import SwiftUI
 import Combine
 
 final class AppNav: ObservableObject {
-    @Published var path = NavigationPath()
 
-    /// Clears the entire NavigationStack → returns to HomeView
+    /// Each view in the stack watches this; when true it calls dismiss()
+    @Published var shouldPopToRoot = false
+
+    /// Broadcast pop-to-root, then reset flag after navigation completes
     func popToRoot() {
-        path = NavigationPath()
+        shouldPopToRoot = true
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+            self.shouldPopToRoot = false
+        }
     }
 }

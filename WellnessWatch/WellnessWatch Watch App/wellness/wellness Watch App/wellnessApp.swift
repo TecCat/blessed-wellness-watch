@@ -15,7 +15,7 @@ struct wellness_Watch_AppApp: App {
 
     var body: some Scene {
         WindowGroup {
-            NavigationStack(path: $nav.path) {
+            NavigationStack {
                 HomeView()
             }
             .environmentObject(nav)

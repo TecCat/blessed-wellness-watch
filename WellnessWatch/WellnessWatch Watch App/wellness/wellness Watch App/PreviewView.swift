@@ -43,6 +43,8 @@ struct PreviewView: View {
 
     let pattern: BreathingPattern
 
+    @EnvironmentObject private var nav: AppNav
+    @Environment(\.dismiss) private var dismiss
     @StateObject private var healthKit = HealthKitService()
     @State private var selectedMinutes: Int
     @State private var selectedPace: PaceOption = .standard
@@ -95,7 +97,7 @@ struct PreviewView: View {
 
                 // Start button
                 NavigationLink {
-                    BreathingView(pattern: adjustedPattern)
+                    BreathingView(pattern: adjustedPattern, selectedPace: selectedPace)
                 } label: {
                     Text("開始練習")
                         .font(.system(size: 14, weight: .semibold))
@@ -110,6 +112,9 @@ struct PreviewView: View {
             }
             .padding(.horizontal, 6)
             .padding(.vertical, 4)
+        }
+        .onChange(of: nav.shouldPopToRoot) { _, should in
+            if should { dismiss() }
         }
         .navigationTitle(pattern.name)
         .task {
@@ -264,8 +269,10 @@ struct PreviewView: View {
 
 #Preview("4-7-8 Standard") {
     NavigationStack { PreviewView(pattern: .breathing478) }
+        .environmentObject(AppNav())
 }
 
 #Preview("Box Breathing") {
     NavigationStack { PreviewView(pattern: .box) }
+        .environmentObject(AppNav())
 }
