@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import SwiftData
 
 @main
 struct wellness_Watch_AppApp: App {
@@ -15,5 +16,6 @@ struct wellness_Watch_AppApp: App {
                 HomeView()
             }
         }
+        .modelContainer(for: SessionRecord.self)
     }
 }

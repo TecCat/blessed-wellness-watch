@@ -90,12 +90,15 @@ struct BoxAnimationView: View {
 struct BreathingView: View {
 
     let pattern: BreathingPattern
+    let selectedPace: PaceOption
 
     /// Invoked when the session ends (natural completion OR early stop).
     /// - Parameters:
     ///   - completedCycles: how many full cycles finished
     ///   - isCompleted: true = finished all cycles naturally
     var onSessionEnd: ((Int, Bool) -> Void)? = nil
+
+    private let startedAt = Date()
 
     @StateObject private var session = BreathingSession()
 
@@ -146,7 +149,9 @@ struct BreathingView: View {
                 onDone: {
                     showResult = false
                     dismiss()
-                }
+                },
+                paceLabel: selectedPace.label,
+                startedAt: startedAt
             )
         }
     }
@@ -258,18 +263,18 @@ struct BreathingView: View {
 
 #Preview("Box Breathing") {
     NavigationStack {
-        BreathingView(pattern: .box)
+        BreathingView(pattern: .box, selectedPace: .standard)
     }
 }
 
 #Preview("4-7-8") {
     NavigationStack {
-        BreathingView(pattern: .breathing478)
+        BreathingView(pattern: .breathing478, selectedPace: .standard)
     }
 }
 
 #Preview("生理式嘆息") {
     NavigationStack {
-        BreathingView(pattern: .physiologicalSigh)
+        BreathingView(pattern: .physiologicalSigh, selectedPace: .standard)
     }
 }

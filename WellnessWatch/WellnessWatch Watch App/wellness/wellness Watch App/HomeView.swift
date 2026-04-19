@@ -31,6 +31,17 @@ struct HomeView: View {
             .padding(.top, 4)
         }
         .navigationTitle("呼吸練習")
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                NavigationLink {
+                    HistoryView()
+                } label: {
+                    Image(systemName: "clock.arrow.circlepath")
+                        .font(.system(size: 14))
+                        .foregroundStyle(.white.opacity(0.7))
+                }
+            }
+        }
         .task {
             // Request auth on first use, not on launch (PRD §4.2.1)
             await healthKit.requestAuthorizationIfNeeded()

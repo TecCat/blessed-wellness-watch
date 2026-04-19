@@ -1,5 +1,6 @@
 // WellnessWatch Watch App/Views/ResultView.swift
 import SwiftUI
+import SwiftData
 
 struct ResultView: View {
 
@@ -9,6 +10,11 @@ struct ResultView: View {
     let isCompleted: Bool
     let elapsedSeconds: Double
     let onDone: () -> Void
+    let paceLabel: String
+    let startedAt: Date
+
+    @Environment(\.modelContext) private var modelContext
+    @State private var sessionSaved = false
 
     // MARK: Body
 
@@ -68,6 +74,22 @@ struct ResultView: View {
             .padding(.horizontal, 8)
             .padding(.bottom, 8)
         }
+        .onAppear {
+            guard !sessionSaved else { return }
+            sessionSaved = true
+            let record = SessionRecord(
+                patternID: pattern.id,
+                patternName: pattern.name,
+                startedAt: startedAt,
+                elapsedSeconds: elapsedSeconds,
+                completedCycles: completedCycles,
+                totalCycles: totalCycles,
+                wasCompleted: isCompleted,
+                paceLabel: paceLabel
+            )
+            modelContext.insert(record)
+            AppLogger.session("Saved session: \(pattern.id), \(Int(elapsedSeconds))s, completed=\(isCompleted)")
+        }
         .background(BreathingColors.background.ignoresSafeArea())
         .navigationBarBackButtonHidden(true)
     }
@@ -116,9 +138,12 @@ struct ResultView: View {
             totalCycles: 8,
             isCompleted: true,
             elapsedSeconds: 300,
-            onDone: {}
+            onDone: {},
+            paceLabel: "標準",
+            startedAt: Date()
         )
     }
+    .modelContainer(for: SessionRecord.self, inMemory: true)
 }
 
 #Preview("Stopped Early") {
@@ -129,7 +154,10 @@ struct ResultView: View {
             totalCycles: 10,
             isCompleted: false,
             elapsedSeconds: 57,
-            onDone: {}
+            onDone: {},
+            paceLabel: "標準",
+            startedAt: Date()
         )
     }
+    .modelContainer(for: SessionRecord.self, inMemory: true)
 }
