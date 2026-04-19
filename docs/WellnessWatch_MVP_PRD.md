@@ -1,12 +1,12 @@
 # WellnessWatch — MVP Product Requirements Document
 
-> **Version**: 1.2
-> **Status**: ⚠️ Review Ready — 待 Product Owner 確認後轉為 Approved
+> **Version**: 1.3
+> **Status**: ✅ Phase 1–2 Complete
 > **Target Platform**: watchOS 7+ · iOS 16+
 > **Planned Launch**: Week 14–15 (TestFlight Beta: Week 10)
 > **Author**: [Product Owner]
 > **Reviewers**: [Tech Lead / Design Lead]
-> **Last updated**: 2026-04-18
+> **Last updated**: 2026-04-19
 
 ---
 
@@ -78,6 +78,12 @@ The primary target audience is urban professionals aged 25–45 who own an Apple
 | 4 | Session Results Screen | Post-session heart rate change, HRV change, and completed cycles | **P1 — Important** |
 | 5 | AI Personalized Coaching | Post-session Claude API feedback (≤ 150 words); optional, off by default | **P1 — Important** |
 | 6 | iOS Companion App | Session history trends, basic settings, privacy controls | **P2 — Supporting** |
+| 7 | Session History | SwiftData-backed list with swipe-delete and clear-all | **P1 — Complete ✅** |
+| 8 | Practice Statistics | 7-day chart, streak counter, favourite pattern (Swift Charts) | **P1 — Complete ✅** |
+| 9 | Daily Reminder | UNCalendarNotificationTrigger with custom time picker | **P1 — Complete ✅** |
+| 10 | Navigation System | AppNav ObservableObject for reliable pop-to-root | **P0 — Complete ✅** |
+| 11 | Logging | OSLog AppLogger (session/healthkit/nav/ui categories) | **P0 — Complete ✅** |
+| 12 | Unit Tests | 18 XCTest cases covering model logic and session state | **P1 — Complete ✅** |
 
 ### 3.2 Out of Scope — Planned for v1.1+
 
@@ -542,11 +548,11 @@ iOS Companion App（獨立）
 
 | Week | Milestone | Deliverables | Status |
 |------|-----------|-------------|--------|
-| W1–2 | Tech stack confirmed | Xcode project scaffolded; dependencies decided; HealthKit proof of concept | ⬜ Not started |
-| W3–4 | Core breathing features | All 5 mode animations; HapticService; HomeView; BreathingView | ⬜ Not started |
-| W5–6 | HealthKit integration | HealthKitService; stress level calculation; ResultView data display | ⬜ Not started |
-| W7–8 | AI coach backend | FastAPI deployed; Claude API integrated; rate limiting; error handling | ⬜ Not started |
-| W9 | iOS Companion App | History view; settings; WatchConnectivity sync | ⬜ Not started |
+| W1–2 | Tech stack confirmed | Xcode project scaffolded; dependencies decided; HealthKit proof of concept | ✅ Complete |
+| W3–4 | Core breathing features | All 5 mode animations; HapticService; HomeView; BreathingView | ✅ Complete (5 modes, animations, haptics, adaptive pacing) |
+| W5–6 | HealthKit integration | HealthKitService; stress level calculation; ResultView data display | 🚧 Simulator complete; real device pending paid Developer account |
+| W7 | Data persistence + statistics | SwiftData SessionRecord; HistoryView; StatsView; NotificationService; ReminderView | ✅ Complete |
+| W8–9 | AI coach backend | FastAPI deployed; Claude API integrated; rate limiting; error handling | ⬜ Not started |
 | W10 | Internal TestFlight | TestFlight distribution; crash monitoring setup; performance testing | ⬜ Not started |
 | W11–12 | Beta testing + fixes | 20–50 external beta testers; bug fixes; UX refinements | ⬜ Not started |
 | W13 | Launch preparation | Screenshots; metadata; privacy policy deployed; backend load testing | ⬜ Not started |
@@ -631,4 +637,15 @@ iOS Companion App（獨立）
 ---
 
 *This document is maintained by the WellnessWatch product team.*
-*Last updated: 2026-03-26*
+*Last updated: 2026-04-19*
+
+---
+
+## 12. Changelog
+
+| Version | Date | Changes |
+|---------|------|---------|
+| 1.0 | 2026-04-17 | Initial PRD |
+| 1.1 | 2026-04-17 | Added Adaptive Pacing Engine §4.1.4 |
+| 1.2 | 2026-04-18 | Added Box animation spec, ResultView spec |
+| 1.3 | 2026-04-19 | Added Session History, StatsView, Daily Reminder, AppNav, AppLogger, Unit Tests to scope; updated milestone status |

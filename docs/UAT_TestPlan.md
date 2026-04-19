@@ -1,6 +1,6 @@
 # WellnessWatch UAT Test Plan
 
-**Version:** 1.0 | **Date:** 2026-04-19 | **Platform:** watchOS
+**Version:** 1.1 | **Date:** 2026-04-19 | **Platform:** watchOS
 
 ---
 
@@ -291,6 +291,86 @@
 
 ---
 
+### TC-21 — HistoryView: Session record saved after completion
+
+**Preconditions:** App has completed at least one session. HistoryView is accessible via the clock icon toolbar button on HomeView.
+
+| # | Action | Expected Result | Result | Notes |
+|---|--------|-----------------|--------|-------|
+| 1 | Complete a full session (let it run to zero) | ResultView is shown | | |
+| 2 | Tap the Done / 完成 button | App navigates back to HomeView | | |
+| 3 | Tap the clock icon in the HomeView toolbar | HistoryView opens | | |
+| 4 | Observe the top row | New record appears at the top with the correct pattern name | | |
+| 5 | Verify the record details | Elapsed time and a ✅ completion indicator are shown | | |
+
+---
+
+### TC-22 — HistoryView: Swipe to delete single record
+
+**Preconditions:** HistoryView is open with at least two records present.
+
+| # | Action | Expected Result | Result | Notes |
+|---|--------|-----------------|--------|-------|
+| 1 | Swipe left on one row in the list | A Delete button (紅色「刪除」) appears on that row | | |
+| 2 | Tap the Delete button | That record is removed from the list | | |
+| 3 | Verify other records are untouched | All remaining records are still present and unchanged | | |
+
+---
+
+### TC-23 — HistoryView: Clear All with confirmation
+
+**Preconditions:** HistoryView is open with at least one record present.
+
+| # | Action | Expected Result | Result | Notes |
+|---|--------|-----------------|--------|-------|
+| 1 | Scroll to the bottom of HistoryView | A "清除全部" button is visible | | |
+| 2 | Tap "清除全部" | A confirmation dialog appears | | |
+| 3 | Confirm the action | All records are removed | | |
+| 4 | Observe the empty state | The message "🌙 尚無練習紀錄" (or equivalent empty state) is displayed | | |
+
+---
+
+### TC-24 — StatsView: Stats reflect session data
+
+**Preconditions:** At least 2 sessions have been completed and saved. HistoryView is accessible.
+
+| # | Action | Expected Result | Result | Notes |
+|---|--------|-----------------|--------|-------|
+| 1 | Complete 2 sessions if not already done | Sessions are saved in HistoryView | | |
+| 2 | Open HistoryView via the clock icon | Session records are visible | | |
+| 3 | Tap the chart icon in the HistoryView toolbar | StatsView opens | | |
+| 4 | Verify total sessions card | Value is ≥ 2 | | |
+| 5 | Verify total minutes card | Value is > 0 | | |
+| 6 | Verify 7-day chart | Bar(s) for today are visible | | |
+
+---
+
+### TC-25 — ReminderView: Enable daily reminder
+
+**Preconditions:** App is on HomeView. Notification permissions have been granted (or will be requested).
+
+| # | Action | Expected Result | Result | Notes |
+|---|--------|-----------------|--------|-------|
+| 1 | Tap the bell icon in the HomeView toolbar | ReminderView opens | | |
+| 2 | Toggle the "每日提醒" switch to ON | Toggle turns on; a time picker becomes visible | | |
+| 3 | Observe the status text | Status text shows "每天 20:00 提醒練習" (or the current default time) | | |
+| 4 | Verify no crash | App remains stable throughout | | |
+
+---
+
+### TC-26 — ReminderView: Change reminder time
+
+**Preconditions:** ReminderView is open with the "每日提醒" toggle ON.
+
+| # | Action | Expected Result | Result | Notes |
+|---|--------|-----------------|--------|-------|
+| 1 | Use the hour picker to select 08 | Picker shows 08 | | |
+| 2 | Use the minute picker to select 30 | Picker shows 30 | | |
+| 3 | Observe the status text | Status text updates to "每天 08:30 提醒練習" | | |
+| 4 | Background verification (optional) | System notification for the new time has been scheduled (can verify in Xcode console) | | |
+
+---
+
 ## QA Log Template
 
 Use this table to record each test run.
@@ -317,12 +397,18 @@ Use this table to record each test run.
 | | | | TC-18 | | |
 | | | | TC-19 | | |
 | | | | TC-20 | | |
+| | | | TC-21 | | |
+| | | | TC-22 | | |
+| | | | TC-23 | | |
+| | | | TC-24 | | |
+| | | | TC-25 | | |
+| | | | TC-26 | | |
 
 ---
 
 ## Sign-off
 
-All critical TCs (TC-01 through TC-20) must be ✅ before a release build is submitted to TestFlight or App Store Connect.
+All critical TCs (TC-01 through TC-26) must be ✅ before a release build is submitted to TestFlight or App Store Connect.
 
 | Role | Name | Date | Signature |
 |------|------|------|-----------|
