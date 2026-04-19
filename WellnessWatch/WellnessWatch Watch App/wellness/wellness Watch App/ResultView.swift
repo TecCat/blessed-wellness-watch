@@ -57,8 +57,13 @@ struct ResultView: View {
                         .padding(.horizontal, 4)
                 }
 
-                // Done button — clears NavigationStack → back to HomeView
-                Button(action: { nav.popToRoot() }) {
+                // Done button — reset showResult first, then pop to root
+                Button(action: {
+                    onDone()   // sets showResult = false in BreathingView
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.15) {
+                        nav.popToRoot()
+                    }
+                }) {
                     Text("完成")
                         .font(.system(size: 14, weight: .semibold))
                         .foregroundStyle(.white)
