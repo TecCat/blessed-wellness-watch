@@ -1,5 +1,6 @@
 // AppNav.swift — Shared navigation state for pop-to-root
 import SwiftUI
+import Combine
 
 final class AppNav: ObservableObject {
     @Published var path = NavigationPath()
