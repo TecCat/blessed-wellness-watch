@@ -8,6 +8,7 @@ import json
 import os
 import time
 from collections import defaultdict
+from pathlib import Path
 from typing import Optional
 
 import anthropic
@@ -17,8 +18,8 @@ from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
-# 載入環境變數
-load_dotenv()
+# 載入環境變數（always resolve relative to this file, not cwd）
+load_dotenv(dotenv_path=Path(__file__).parent / ".env", override=True)
 
 # ──────────────────────────────────────────────
 # 常數與設定

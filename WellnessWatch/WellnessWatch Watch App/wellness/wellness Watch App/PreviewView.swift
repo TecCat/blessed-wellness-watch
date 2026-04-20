@@ -88,7 +88,7 @@ struct PreviewView: View {
                         .foregroundStyle(.white.opacity(0.4))
                     Picker("", selection: $selectedMinutes) {
                         ForEach([2, 3, 4, 5, 7, 10, 15, 20], id: \.self) { min in
-                            Text("\(min) 分鐘").tag(min)
+                            Text("\(min) \(L.minLabel)").tag(min)
                         }
                     }
                     .pickerStyle(.wheel)
