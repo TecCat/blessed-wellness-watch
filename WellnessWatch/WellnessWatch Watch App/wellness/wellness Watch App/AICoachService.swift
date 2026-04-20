@@ -1,5 +1,6 @@
 // WellnessWatch Watch App/Services/AICoachService.swift
 import Foundation
+import Combine
 import SwiftData
 
 // MARK: - DTO models (Encodable/Decodable only – no SwiftData)
