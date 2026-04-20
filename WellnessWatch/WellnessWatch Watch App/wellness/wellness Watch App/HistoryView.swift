@@ -100,7 +100,7 @@ struct HistoryRow: View {
 
             VStack(alignment: .leading, spacing: 2) {
                 HStack {
-                    Text(record.patternName)
+                    Text(L.isEnglish ? L.patternName(record.patternID) : record.patternName)
                         .font(.system(size: 12, weight: .semibold))
                         .foregroundStyle(.white)
                         .lineLimit(1)
