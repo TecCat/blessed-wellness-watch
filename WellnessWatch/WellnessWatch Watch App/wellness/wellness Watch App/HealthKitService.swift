@@ -20,10 +20,10 @@ enum StressLevel {
 
     var label: String {
         switch self {
-        case .relaxed:   return "放鬆"
-        case .mild:      return "輕度緊張"
-        case .high:      return "高度緊張"
-        case .measuring: return "測量中..."
+        case .relaxed:   return L.stressRelaxed
+        case .mild:      return L.stressMild
+        case .high:      return L.stressHigh
+        case .measuring: return L.stressMeasuring
         }
     }
 

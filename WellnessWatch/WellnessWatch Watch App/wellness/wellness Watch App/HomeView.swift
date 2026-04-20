@@ -30,7 +30,7 @@ struct HomeView: View {
             .padding(.horizontal, 4)
             .padding(.top, 4)
         }
-        .navigationTitle("呼吸練習")
+        .navigationTitle(L.navTitleHome)
         .toolbar {
             ToolbarItem(placement: .topBarLeading) {
                 NavigationLink {
@@ -121,17 +121,17 @@ struct ModeRow: View {
                 .frame(width: 8, height: 8)
 
             VStack(alignment: .leading, spacing: 1) {
-                Text(pattern.name)
+                Text(L.isEnglish && !L.patternName(pattern.id).isEmpty ? L.patternName(pattern.id) : pattern.name)
                     .font(.system(size: 13, weight: .semibold))
                     .foregroundStyle(.white)
-                Text(pattern.effectLabel)
+                Text(L.isEnglish && !L.patternEffect(pattern.id).isEmpty ? L.patternEffect(pattern.id) : pattern.effectLabel)
                     .font(.system(size: 10))
                     .foregroundStyle(.white.opacity(0.5))
             }
 
             Spacer()
 
-            Text("\(pattern.totalDurationMinutes) min")
+            Text("\(pattern.totalDurationMinutes) \(L.minLabel)")
                 .font(.system(size: 11, weight: .medium))
                 .foregroundStyle(.white.opacity(0.4))
         }

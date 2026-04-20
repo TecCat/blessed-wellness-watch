@@ -37,7 +37,11 @@ COACH_SYSTEM_PROMPT = """你是 WellnessWatch 的 AI 健康教練。
 - 當數據沒有明顯變化時，正常化這個情況（「每次練習都有累積效果」），而非假裝有進步
 - 字數限制：繁體中文，100字以內（Apple Watch 螢幕空間有限）
 - 不使用「太棒了！」「超厲害！」等誇張詞彙
-- 可以使用的語氣：「不錯」「值得注意」「這很正常」「建議你」「數據顯示」"""
+- 可以使用的語氣：「不錯」「值得注意」「這很正常」「建議你」「數據顯示」
+
+回覆語言規則：
+- 若 locale 為 "en" 或 "en-US"，所有回覆（feedback、next_reason）必須用英文
+- 其他 locale 一律用繁體中文"""
 
 # 成就里程碑
 ACHIEVEMENTS = {
@@ -57,6 +61,16 @@ RATE_LIMIT_WINDOW = 60  # 秒
 # ──────────────────────────────────────────────
 # Pydantic 資料模型
 # ──────────────────────────────────────────────
+
+class HistorySummary(BaseModel):
+    """User's historical performance summary passed from the Watch app."""
+    avg_duration_seconds: float = 0      # average session length across all past sessions
+    avg_completion_rate: float = 0       # 0.0–1.0, avg(completed_cycles / total_cycles)
+    sessions_this_week: int = 0          # sessions completed in last 7 days
+    sessions_last_week: int = 0          # sessions completed in the 7 days before that
+    avg_pace_label: str = "標準"         # most common pace used
+    most_used_pattern_id: str = ""       # most frequently used pattern
+
 
 class NextSuggestion(BaseModel):
     pattern_id: str
@@ -85,6 +99,12 @@ class SessionFeedbackRequest(BaseModel):
     # 使用者歷史（匿名）
     total_sessions: int = 0
     streak_days: int = 0
+
+    # 歷史比較數據
+    history: Optional[HistorySummary] = None
+
+    # 語言設定
+    locale: str = "zh-TW"
 
 
 class SessionFeedbackResponse(BaseModel):
@@ -150,6 +170,8 @@ def suggest_next(req: SessionFeedbackRequest) -> NextSuggestion:
     - 已完成且快速步調 → 維持快速
     - 其他 → 相同模式、標準步調
     """
+    is_en = req.locale.startswith("en")
+
     # 呼吸模式對應表（pattern_id → 預設時長分鐘）
     duration_map = {
         "box": 5,
@@ -159,24 +181,28 @@ def suggest_next(req: SessionFeedbackRequest) -> NextSuggestion:
         "physiological-sigh": 5,
     }
 
-    if req.stress_level == "高度緊張":
+    reason_high_stress = "Slow breathing helps with high stress" if is_en else "壓力較高，慢速腹式呼吸更舒緩"
+    reason_keep_fast = "Good state, keep it up" if is_en else "狀態不錯，繼續保持"
+    reason_default = "Consistent practice builds results" if is_en else "每次練習都在累積效果"
+
+    if req.stress_level in ("高度緊張", "high"):
         # 高壓 → 建議較溫和的模式，慢速
         return NextSuggestion(
             pattern_id="diaphragmatic",
             pattern_name="Diaphragmatic Breathing",
             duration_minutes=5,
-            pace_label="慢",
-            reason="壓力較高，慢速腹式呼吸更舒緩",
+            pace_label="慢" if not is_en else "Slow",
+            reason=reason_high_stress,
         )
 
-    if req.was_completed and req.pace_label == "快":
+    if req.was_completed and req.pace_label in ("快", "Fast", "fast"):
         # 已完成 + 快速 → 繼續挑戰
         return NextSuggestion(
             pattern_id=req.pattern_id,
             pattern_name=req.pattern_name,
             duration_minutes=duration_map.get(req.pattern_id, 5),
-            pace_label="快",
-            reason="狀態不錯，繼續保持",
+            pace_label=req.pace_label,
+            reason=reason_keep_fast,
         )
 
     # 預設：相同模式、標準步調
@@ -184,8 +210,8 @@ def suggest_next(req: SessionFeedbackRequest) -> NextSuggestion:
         pattern_id=req.pattern_id,
         pattern_name=req.pattern_name,
         duration_minutes=duration_map.get(req.pattern_id, 5),
-        pace_label="標準",
-        reason="每次練習都在累積效果",
+        pace_label="標準" if not is_en else "Normal",
+        reason=reason_default,
     )
 
 
@@ -200,6 +226,8 @@ def build_user_message(req: SessionFeedbackRequest) -> str:
         "請根據以下練習數據，以 JSON 格式回傳教練意見。",
         "",
         "## 練習資料",
+        f"用戶語言設定：{req.locale}",
+        "",
         f"- 呼吸模式：{req.pattern_name}（{req.pattern_id}）",
         f"- 實際時長：{duration_min} 分鐘",
         f"- 完成輪數：{req.completed_cycles} / {req.total_cycles}",
@@ -220,6 +248,26 @@ def build_user_message(req: SessionFeedbackRequest) -> str:
             lines.append(f"- 壓力狀態：{req.stress_level}")
     else:
         lines.append("## 生理數據：無（HealthKit 未授權）")
+        lines.append("## 歷史比較數據（請根據這些比較，判斷用戶是否有進步）")
+        if req.history and req.history.avg_duration_seconds > 0:
+            current_duration = req.duration_seconds
+            avg_duration = req.history.avg_duration_seconds
+            duration_change_pct = ((current_duration - avg_duration) / avg_duration) * 100
+
+            current_ratio = req.completed_cycles / max(req.total_cycles, 1)
+            avg_ratio = req.history.avg_completion_rate
+
+            lines.append(f"- 本次時長：{round(current_duration/60, 1)} 分鐘 vs 歷史平均 {round(avg_duration/60, 1)} 分鐘（{'+' if duration_change_pct >= 0 else ''}{duration_change_pct:.0f}%）")
+            lines.append(f"- 本次完成率：{current_ratio*100:.0f}% vs 歷史平均 {avg_ratio*100:.0f}%")
+            lines.append(f"- 本週練習次數：{req.history.sessions_this_week} 次 vs 上週 {req.history.sessions_last_week} 次")
+            lines.append("")
+            lines.append("判斷規則：")
+            lines.append("- 若本次時長 > 歷史平均 且 完成率 > 歷史平均 → 有進步，以正面鼓勵表達")
+            lines.append("- 若時長或完成率明顯下降（>15%）→ 給予注意提示（不責備，說可能原因）")
+            lines.append("- 若差距在 ±15% 內 → 屬正常波動，肯定持續練習即可")
+        else:
+            lines.append("- 這是用戶的第一次或早期練習，無足夠歷史數據比較")
+            lines.append("- 請以鼓勵初學者的語氣給予建議")
 
     lines += [
         "",
@@ -333,18 +381,22 @@ async def session_feedback(req: SessionFeedbackRequest, request: Request):
     except json.JSONDecodeError:
         # JSON 解析失敗 → 使用 fallback 建議
         next_suggestion = suggest_next(req)
-        feedback = raw_text[:100] if 'raw_text' in dir() else "每次練習都有累積效果，持續下去吧。"
+        _is_en = req.locale.startswith("en")
+        _fallback_default = "Every session builds results. Keep going." if _is_en else "每次練習都有累積效果，持續下去吧。"
+        feedback = raw_text[:100] if 'raw_text' in dir() else _fallback_default
 
     except anthropic.APIError:
         # Claude API 錯誤 → 優雅降級，不暴露錯誤細節
         next_suggestion = suggest_next(req)
-        feedback = "每次練習都在為身心健康打下基礎，持續是最好的方式。"
+        _is_en = req.locale.startswith("en")
+        feedback = "Each session builds a foundation for wellbeing. Keep it up." if _is_en else "每次練習都在為身心健康打下基礎，持續是最好的方式。"
         coach_confidence = "general"
 
     except Exception:
         # 其他未預期錯誤
         next_suggestion = suggest_next(req)
-        feedback = "繼續保持練習節奏，每一次呼吸練習都有意義。"
+        _is_en = req.locale.startswith("en")
+        feedback = "Keep up your practice rhythm — every breath session matters." if _is_en else "繼續保持練習節奏，每一次呼吸練習都有意義。"
         coach_confidence = "general"
 
     return SessionFeedbackResponse(

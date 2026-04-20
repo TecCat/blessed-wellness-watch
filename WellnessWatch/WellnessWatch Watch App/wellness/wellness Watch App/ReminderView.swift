@@ -13,7 +13,7 @@ struct ReminderView: View {
         List {
             // MARK: Toggle row
             Section {
-                Toggle("每日提醒", isOn: $enabled)
+                Toggle(L.dailyReminder, isOn: $enabled)
                     .onChange(of: enabled) { _, newValue in
                         handleToggle(newValue)
                     }
@@ -21,9 +21,9 @@ struct ReminderView: View {
 
             // MARK: Time picker rows (only when enabled)
             if enabled {
-                Section("提醒時間") {
+                Section(L.reminderTime) {
                     // Hour
-                    Picker("小時", selection: $hour) {
+                    Picker(L.hourLabel, selection: $hour) {
                         ForEach(0..<24, id: \.self) { h in
                             Text(String(format: "%02d 時", h)).tag(h)
                         }
@@ -31,7 +31,7 @@ struct ReminderView: View {
                     .onChange(of: hour) { _, _ in reschedule() }
 
                     // Minute
-                    Picker("分鐘", selection: $minute) {
+                    Picker(L.minuteLabel, selection: $minute) {
                         ForEach(minuteOptions, id: \.self) { m in
                             Text(String(format: "%02d 分", m)).tag(m)
                         }
@@ -49,18 +49,18 @@ struct ReminderView: View {
                     .frame(maxWidth: .infinity)
             }
         }
-        .navigationTitle("提醒設定")
+        .navigationTitle(L.navTitleReminder)
         .task { await loadState() }
     }
 
     // MARK: - Helpers
 
     private var statusText: String {
-        guard enabled else { return "未設定提醒" }
+        guard enabled else { return L.reminderOff }
         #if targetEnvironment(simulator)
-        return "每天 \(String(format: "%02d:%02d", hour, minute)) 提醒練習\n(模擬器不推送通知，實機有效)"
+        return String(format: L.reminderSet, hour, minute) + "\n" + L.reminderSimNote
         #else
-        return "每天 \(String(format: "%02d:%02d", hour, minute)) 提醒練習"
+        return String(format: L.reminderSet, hour, minute)
         #endif
     }
 

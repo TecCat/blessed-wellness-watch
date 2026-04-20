@@ -10,11 +10,11 @@ enum BreathingPhase: Equatable {
 
     var label: String {
         switch self {
-        case .inhale:  return "吸氣"
-        case .inhale2: return "再吸！"
-        case .hold:    return "屏氣"
-        case .exhale:  return "吐氣"
-        case .rest:    return "放鬆"
+        case .inhale:  return L.phaseInhale
+        case .inhale2: return L.phaseInhale2
+        case .hold:    return L.phaseHold
+        case .exhale:  return L.phaseExhale
+        case .rest:    return L.phaseRest
         }
     }
 }

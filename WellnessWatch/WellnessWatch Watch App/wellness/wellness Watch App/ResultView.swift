@@ -27,7 +27,7 @@ struct ResultView: View {
                 VStack(spacing: 4) {
                     Text(isCompleted ? "🎉" : "⏹️")
                         .font(.system(size: 38))
-                    Text(isCompleted ? "練習完成！" : "練習結束")
+                    Text(isCompleted ? L.sessionDone : L.sessionStopped)
                         .font(.system(size: 15, weight: .semibold))
                         .foregroundStyle(.white)
                 }
@@ -35,15 +35,15 @@ struct ResultView: View {
 
                 // Stats row
                 HStack(spacing: 0) {
-                    statItem(value: elapsedFormatted, label: "時長")
+                    statItem(value: elapsedFormatted, label: L.statDuration)
                     Rectangle()
                         .fill(.white.opacity(0.15))
                         .frame(width: 1, height: 28)
-                    statItem(value: "\(completedCycles)", label: "完成輪")
+                    statItem(value: "\(completedCycles)", label: L.statCycles)
                     Rectangle()
                         .fill(.white.opacity(0.15))
                         .frame(width: 1, height: 28)
-                    statItem(value: pattern.name.components(separatedBy: " ").first ?? "", label: "模式")
+                    statItem(value: pattern.name.components(separatedBy: " ").first ?? "", label: L.statMode)
                 }
                 .padding(.vertical, 10)
                 .background(.white.opacity(0.07), in: RoundedRectangle(cornerRadius: 12))
@@ -64,7 +64,7 @@ struct ResultView: View {
                         nav.popToRoot()
                     }
                 }) {
-                    Text("完成")
+                    Text(L.doneButton)
                         .font(.system(size: 14, weight: .semibold))
                         .foregroundStyle(.white)
                         .frame(maxWidth: .infinity)
@@ -123,14 +123,7 @@ struct ResultView: View {
     }
 
     private var encouragementText: String {
-        switch pattern.id {
-        case "4-7-8":              return "神經系統已放鬆，準備好迎接好眠 🌙"
-        case "box":                return "專注力已重置，保持清醒狀態 💪"
-        case "diaphragmatic":      return "橫膈膜充分活動，壓力正在消散 🌿"
-        case "resonance":          return "HRV 共振達成，自律神經趨於平衡 💚"
-        case "physiological-sigh": return "肺泡已重開，副交感神經啟動 ✨"
-        default:                   return "做得很好，繼續保持 👏"
-        }
+        L.encouragement(pattern.id)
     }
 }
 

@@ -8,9 +8,9 @@ enum PaceOption: CaseIterable, Equatable {
 
     var label: String {
         switch self {
-        case .slow:     return "慢"
-        case .standard: return "標準"
-        case .fast:     return "快"
+        case .slow:     return L.isEnglish ? "Slow" : "慢"
+        case .standard: return L.isEnglish ? "Normal" : "標準"
+        case .fast:     return L.isEnglish ? "Fast" : "快"
         }
     }
 
@@ -83,7 +83,7 @@ struct PreviewView: View {
 
                 // Duration picker
                 VStack(spacing: 3) {
-                    Text("練習時間")
+                    Text(L.durationLabel)
                         .font(.system(size: 11))
                         .foregroundStyle(.white.opacity(0.4))
                     Picker("", selection: $selectedMinutes) {
@@ -99,7 +99,7 @@ struct PreviewView: View {
                 NavigationLink {
                     BreathingView(pattern: adjustedPattern, selectedPace: selectedPace)
                 } label: {
-                    Text("開始練習")
+                    Text(L.startButton)
                         .font(.system(size: 14, weight: .semibold))
                         .foregroundStyle(.white)
                         .frame(maxWidth: .infinity)
@@ -147,14 +147,14 @@ struct PreviewView: View {
                 }
             } else if !assessmentPicked {
                 // Fallback: self-assessment
-                Text("你現在的狀態？")
+                Text(L.howAreYou)
                     .font(.system(size: 12, weight: .medium))
                     .foregroundStyle(.white.opacity(0.85))
 
                 HStack(spacing: 8) {
-                    assessmentButton("😰", pace: .slow,  label: "緊繃")
-                    assessmentButton("😐", pace: .standard, label: "一般")
-                    assessmentButton("😊", pace: .fast,  label: "放鬆")
+                    assessmentButton("😰", pace: .slow,  label: L.feelTense)
+                    assessmentButton("😐", pace: .standard, label: L.feelNeutral)
+                    assessmentButton("😊", pace: .fast,  label: L.feelCalm)
                 }
             } else {
                 Text("節奏已設定")

@@ -23,7 +23,7 @@ struct HistoryView: View {
                 recordsList
             }
         }
-        .navigationTitle("練習紀錄")
+        .navigationTitle(L.navTitleHistory)
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
                 NavigationLink {
@@ -35,13 +35,13 @@ struct HistoryView: View {
                 }
             }
         }
-        .confirmationDialog("確定清除所有紀錄？", isPresented: $showClearConfirm) {
-            Button("清除全部", role: .destructive) {
+        .confirmationDialog(L.clearConfirm, isPresented: $showClearConfirm) {
+            Button(L.clearAll, role: .destructive) {
                 for record in records {
                     modelContext.delete(record)
                 }
             }
-            Button("取消", role: .cancel) { }
+            Button(L.clearCancel, role: .cancel) { }
         }
     }
 
@@ -51,7 +51,7 @@ struct HistoryView: View {
         VStack(spacing: 10) {
             Text("🌙")
                 .font(.system(size: 40))
-            Text("尚無練習紀錄")
+            Text(L.emptyHistory)
                 .font(.system(size: 14))
                 .foregroundStyle(.white.opacity(0.5))
         }
@@ -74,7 +74,7 @@ struct HistoryView: View {
             Button {
                 showClearConfirm = true
             } label: {
-                Text("清除全部")
+                Text(L.clearAll)
                     .font(.system(size: 12))
                     .foregroundStyle(.red.opacity(0.75))
                     .frame(maxWidth: .infinity)

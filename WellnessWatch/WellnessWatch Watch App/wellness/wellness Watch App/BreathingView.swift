@@ -139,9 +139,9 @@ struct BreathingView: View {
             HapticService.shared.playCompletion()
             showResult = true
         }
-        .alert("確定要結束練習？", isPresented: $showStopAlert) {
-            Button("繼續", role: .cancel) { }
-            Button("結束", role: .destructive) { session.stop() }
+        .alert(L.stopAlertTitle, isPresented: $showStopAlert) {
+            Button(L.stopAlertContinue, role: .cancel) { }
+            Button(L.stopAlertEnd, role: .destructive) { session.stop() }
         }
         .onChange(of: nav.shouldPopToRoot) { _, should in
             if should { showResult = false; dismiss() }
@@ -223,7 +223,7 @@ struct BreathingView: View {
         Button {
             showStopAlert = true
         } label: {
-            Text("停止")
+            Text(L.stopButton)
                 .font(.system(size: 13, weight: .medium))
                 .foregroundStyle(.white.opacity(0.55))
                 .padding(.vertical, 4)

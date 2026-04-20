@@ -24,16 +24,16 @@ struct StatsView: View {
                 .padding(.top, 8)
             }
         }
-        .navigationTitle("練習統計")
+        .navigationTitle(L.navTitleStats)
     }
 
     // MARK: - Section 1: Summary cards
 
     private var summaryCards: some View {
         HStack(spacing: 6) {
-            StatCard(value: "\(records.count)", label: "總次數")
-            StatCard(value: "\(totalMinutes)", label: "總分鐘")
-            StatCard(value: "\(currentStreak)", label: "連續天")
+            StatCard(value: "\(records.count)", label: L.statTotalSessions)
+            StatCard(value: "\(totalMinutes)", label: L.statTotalMinutes)
+            StatCard(value: "\(currentStreak)", label: L.statStreak)
         }
     }
 
@@ -62,7 +62,7 @@ struct StatsView: View {
 
     private var weekChart: some View {
         VStack(alignment: .leading, spacing: 8) {
-            Text("近 7 天")
+            Text(L.last7Days)
                 .font(.system(size: 13, weight: .semibold))
                 .foregroundStyle(.white.opacity(0.7))
 
@@ -123,7 +123,7 @@ struct StatsView: View {
                         .font(.system(size: 12))
                         .foregroundStyle(.yellow.opacity(0.8))
                     VStack(alignment: .leading, spacing: 2) {
-                        Text("最常練習")
+                        Text(L.favouritePattern)
                             .font(.system(size: 10))
                             .foregroundStyle(.white.opacity(0.5))
                         Text(fav)
