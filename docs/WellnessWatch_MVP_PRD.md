@@ -1,12 +1,12 @@
 # WellnessWatch — MVP Product Requirements Document
 
-> **Version**: 1.3
+> **Version**: 1.4
 > **Status**: ✅ Phase 1–2 Complete
 > **Target Platform**: watchOS 7+ · iOS 16+
 > **Planned Launch**: Week 14–15 (TestFlight Beta: Week 10)
 > **Author**: [Product Owner]
 > **Reviewers**: [Tech Lead / Design Lead]
-> **Last updated**: 2026-04-19
+> **Last updated**: 2026-04-21
 
 ---
 
@@ -197,6 +197,93 @@ The MVP uses a simplified compound model (v1.1 will introduce a machine learning
 - **Tone requirements**: Warm, encouraging, and grounded in science; three-part format (evaluation + physiological explanation + next session recommendation).
 - **Data transmitted**: Anonymized statistics only — heart rate delta, HRV delta, breathing pattern, duration, total session count. **No PII.**
 - **Failure handling**: On network error or API timeout (5 seconds), display a default motivational message. Never crash.
+
+---
+
+---
+
+### 4.3 AI Coach — Persona & Behavior Spec
+
+This section defines the AI Coach's persona, behavioral constraints, and API contract. It supplements the high-level description in §4.3 above and serves as the authoritative reference for backend implementation.
+
+#### Persona Definition
+
+| Dimension | Specification |
+|-----------|--------------|
+| Role | 身心健康心理師視角的 AI 健康教練 |
+| Tone | 溫暖、友善、不誇大 |
+| Evidence | 以數據與科學研究為依據，不說空泛心靈雞湯 |
+| Encouragement | 正面鼓勵，不強求，不恐嚇 |
+| Output length | ≤ 100 繁體中文字（Apple Watch 螢幕限制） |
+| Prohibited | 「太棒了！」「超厲害！」等誇張詞彙 |
+| Allowed | 「不錯」「值得注意」「這很正常」「數據顯示」|
+
+#### Data-Based vs General Response
+
+| Mode | Condition | Coach Behavior |
+|------|-----------|---------------|
+| `data-based` | HealthKit authorized; HR before/after and/or HRV available | Cite actual biometric numbers; explain physiological mechanism (e.g., "心率下降 10 bpm 代表副交感神經系統活化") |
+| `general` | HealthKit not authorized; no biometric data | Give pattern- and duration-based encouragement; normalize absence of data ("每次練習都有累積效果") |
+
+The response includes a `coach_confidence` field (`"data-based"` or `"general"`) so the Watch app can optionally display a source indicator.
+
+#### Achievement Milestones
+
+| Total Sessions | Message |
+|---------------|---------|
+| 1 | 第一次練習 🌱 |
+| 7 | 連續 7 天 🔥 |
+| 30 | 30 次練習 ⭐ |
+| 50 | 50 次達成 💫 |
+| 100 | 百次正念師 🏆 |
+
+Achievements are triggered by the `total_sessions` field in the request. The `achievement` field in the response is `null` when no milestone is reached.
+
+#### API Specification
+
+**Endpoint**: `POST /api/session-feedback` (see `backend/coach_api.py`)
+
+**Request model** (`SessionFeedbackRequest`):
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `pattern_id` | string | Yes | `"box"` / `"4-7-8"` / `"diaphragmatic"` / `"resonance"` / `"physiological-sigh"` |
+| `pattern_name` | string | Yes | Human-readable name, e.g. `"Box Breathing"` |
+| `duration_seconds` | float | Yes | Actual elapsed seconds |
+| `completed_cycles` | int | Yes | Cycles completed |
+| `total_cycles` | int | Yes | Total cycles in the session plan |
+| `was_completed` | bool | Yes | `true` if session finished naturally; `false` if stopped early |
+| `pace_label` | string | Yes | `"慢"` / `"標準"` / `"快"` |
+| `heart_rate_before` | float? | No | Heart rate before session (bpm) |
+| `heart_rate_after` | float? | No | Heart rate after session (bpm) |
+| `hrv_ms` | float? | No | HRV SDNN (ms), most recent reading |
+| `stress_level` | string? | No | `"放鬆"` / `"輕度緊張"` / `"高度緊張"` / `"測量中..."` |
+| `total_sessions` | int | No | Cumulative session count (default 0) |
+| `streak_days` | int | No | Current practice streak in days (default 0) |
+
+**Response model** (`SessionFeedbackResponse`):
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `feedback` | string | ≤ 100 繁體中文字，直接顯示於 Apple Watch 螢幕 |
+| `next_suggestion` | `NextSuggestion` | Recommended next session |
+| `achievement` | string? | Milestone message if triggered; `null` otherwise |
+| `coach_confidence` | string | `"data-based"` or `"general"` |
+
+**`NextSuggestion` model**:
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `pattern_id` | string | Recommended pattern |
+| `pattern_name` | string | Human-readable pattern name |
+| `duration_minutes` | int | Recommended duration |
+| `pace_label` | string | Recommended pace |
+| `reason` | string | ≤ 30 繁體中文字說明原因 |
+
+**Error handling**:
+- `400` — invalid input parameters
+- `429` — rate limit exceeded (20 req/min per IP)
+- `500` — Claude API error; client receives a generic fallback message (no internal details exposed)
 
 ---
 
@@ -649,3 +736,4 @@ iOS Companion App（獨立）
 | 1.1 | 2026-04-17 | Added Adaptive Pacing Engine §4.1.4 |
 | 1.2 | 2026-04-18 | Added Box animation spec, ResultView spec |
 | 1.3 | 2026-04-19 | Added Session History, StatsView, Daily Reminder, AppNav, AppLogger, Unit Tests to scope; updated milestone status |
+| 1.4 | 2026-04-21 | Added §4.3 AI Coach Persona & Behavior Spec; backend files (coach_api.py, requirements.txt, test suite) |
