@@ -66,7 +66,7 @@ struct PreviewView: View {
                     Circle()
                         .fill(pattern.accentColor)
                         .frame(width: 7, height: 7)
-                    Text(pattern.effectLabel)
+                    Text(L.isEnglish ? L.patternEffect(pattern.id) : pattern.effectLabel)
                         .font(.system(size: 11))
                         .foregroundStyle(.white.opacity(0.5))
                 }
@@ -116,7 +116,7 @@ struct PreviewView: View {
         .onChange(of: nav.shouldPopToRoot) { _, should in
             if should { dismiss() }
         }
-        .navigationTitle(pattern.name)
+        .navigationTitle(L.isEnglish ? L.patternName(pattern.id) : pattern.name)
         .task {
             await healthKit.requestAuthorizationIfNeeded()
             if healthKit.isAuthorized {
