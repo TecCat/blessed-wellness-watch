@@ -15,23 +15,29 @@ private struct HistorySummaryDTO: Encodable {
 }
 
 private struct CoachRequest: Encodable {
+    let pattern_id:        String
+    let pattern_name:      String
+    let duration_seconds:  Double
+    let completed_cycles:  Int
+    let total_cycles:      Int
+    let was_completed:     Bool
+    let pace_label:        String
+    let heart_rate_before: Double?   // backend field name
+    let hrv_ms:            Double?   // backend field name
+    let history:           HistorySummaryDTO?
+    let locale:            String
+}
+
+struct NextSuggestion: Decodable {
     let pattern_id:       String
     let pattern_name:     String
-    let duration_seconds: Double
-    let completed_cycles: Int
-    let total_cycles:     Int
-    let was_completed:    Bool
-    let pace_label:       String
-    let heart_rate:       Double?
-    let hrv:              Double?
-    let history:          HistorySummaryDTO?
-    let locale:           String
+    let reason:           String
 }
 
 private struct CoachResponse: Decodable {
-    let feedback:             String
-    let next_pattern_id:      String?
-    let next_pattern_reason:  String?
+    let feedback:         String
+    let next_suggestion:  NextSuggestion?
+    let achievement:      String?
 }
 
 // MARK: - AICoachService
@@ -46,11 +52,11 @@ final class AICoachService: ObservableObject {
     // ---------------------------------------------------------------
     static let backendURL = "http://localhost:8000"
 
-    @Published var feedback:      String? = nil
-    @Published var nextPatternID: String? = nil
-    @Published var nextReason:    String? = nil
-    @Published var isLoading:     Bool    = false
-    @Published var hasFailed:     Bool    = false
+    @Published var feedback:        String? = nil
+    @Published var nextSuggestion:  NextSuggestion? = nil
+    @Published var achievement:     String? = nil
+    @Published var isLoading:       Bool    = false
+    @Published var hasFailed:       Bool    = false
 
     // MARK: Public entry point
 
@@ -66,28 +72,30 @@ final class AICoachService: ObservableObject {
         hrv:             Double?,
         pastRecords:     [SessionRecord]
     ) async {
-        isLoading = true
-        hasFailed = false
-        feedback  = nil
+        isLoading       = true
+        hasFailed       = false
+        feedback        = nil
+        nextSuggestion  = nil
+        achievement     = nil
 
         let locale  = Locale.current.language.languageCode?.identifier == "en" ? "en" : "zh-TW"
         let history = buildHistory(from: pastRecords)
 
         let body = CoachRequest(
-            pattern_id:       patternID,
-            pattern_name:     patternName,
-            duration_seconds: durationSeconds,
-            completed_cycles: completedCycles,
-            total_cycles:     totalCycles,
-            was_completed:    wasCompleted,
-            pace_label:       paceLabel,
-            heart_rate:       (heartRate ?? 0) > 0 ? heartRate : nil,
-            hrv:              (hrv ?? 0) > 0 ? hrv : nil,
-            history:          history,
-            locale:           locale
+            pattern_id:        patternID,
+            pattern_name:      patternName,
+            duration_seconds:  durationSeconds,
+            completed_cycles:  completedCycles,
+            total_cycles:      totalCycles,
+            was_completed:     wasCompleted,
+            pace_label:        paceLabel,
+            heart_rate_before: (heartRate ?? 0) > 0 ? heartRate : nil,
+            hrv_ms:            (hrv ?? 0) > 0 ? hrv : nil,
+            history:           history,
+            locale:            locale
         )
 
-        guard let url = URL(string: "\(Self.backendURL)/coach/feedback") else {
+        guard let url = URL(string: "\(Self.backendURL)/api/session-feedback") else {
             isLoading = false; hasFailed = true; return
         }
 
@@ -96,12 +104,12 @@ final class AICoachService: ObservableObject {
         req.setValue("application/json", forHTTPHeaderField: "Content-Type")
 
         do {
-            req.httpBody      = try JSONEncoder().encode(body)
-            let (data, _)     = try await URLSession.shared.data(for: req)
-            let decoded       = try JSONDecoder().decode(CoachResponse.self, from: data)
-            feedback          = decoded.feedback
-            nextPatternID     = decoded.next_pattern_id
-            nextReason        = decoded.next_pattern_reason
+            req.httpBody     = try JSONEncoder().encode(body)
+            let (data, _)    = try await URLSession.shared.data(for: req)
+            let decoded      = try JSONDecoder().decode(CoachResponse.self, from: data)
+            feedback         = decoded.feedback
+            nextSuggestion   = decoded.next_suggestion
+            achievement      = decoded.achievement
         } catch {
             AppLogger.error("AICoachService: \(error.localizedDescription)", category: "coach")
             hasFailed = true

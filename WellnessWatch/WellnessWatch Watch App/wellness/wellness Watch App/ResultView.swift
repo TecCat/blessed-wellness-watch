@@ -157,12 +157,20 @@ struct ResultView: View {
                         .fixedSize(horizontal: false, vertical: true)
 
                     // Next pattern suggestion (if any)
-                    if let reason = coach.nextReason, !reason.isEmpty {
+                    if let next = coach.nextSuggestion, !next.reason.isEmpty {
                         Divider().overlay(.white.opacity(0.1))
-                        Text(reason)
+                        Text(next.reason)
                             .font(.system(size: 10))
                             .foregroundStyle(.white.opacity(0.45))
                             .fixedSize(horizontal: false, vertical: true)
+                    }
+
+                    // Achievement badge (if any)
+                    if let badge = coach.achievement, !badge.isEmpty {
+                        Text(badge)
+                            .font(.system(size: 10, weight: .medium))
+                            .foregroundStyle(.yellow.opacity(0.85))
+                            .frame(maxWidth: .infinity, alignment: .center)
                     }
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
