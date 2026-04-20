@@ -15,7 +15,13 @@ struct ResultView: View {
 
     @EnvironmentObject private var nav: AppNav
     @Environment(\.modelContext) private var modelContext
-    @State private var sessionSaved = false
+
+    // Past sessions for history summary (newest first)
+    @Query(sort: \SessionRecord.startedAt, order: .reverse) private var allRecords: [SessionRecord]
+
+    @StateObject private var coach   = AICoachService()
+    @StateObject private var healthKit = HealthKitService()
+    @State private var sessionSaved  = false
 
     // MARK: Body
 
@@ -48,18 +54,21 @@ struct ResultView: View {
                 .padding(.vertical, 10)
                 .background(.white.opacity(0.07), in: RoundedRectangle(cornerRadius: 12))
 
-                // Encouragement
+                // Encouragement (built-in, always shown)
                 if isCompleted {
-                    Text(encouragementText)
+                    Text(L.encouragement(pattern.id))
                         .font(.system(size: 11))
                         .foregroundStyle(.white.opacity(0.55))
                         .multilineTextAlignment(.center)
                         .padding(.horizontal, 4)
                 }
 
+                // AI Coach feedback card
+                coachCard
+
                 // Done button — reset showResult first, then pop to root
                 Button(action: {
-                    onDone()   // sets showResult = false in BreathingView
+                    onDone()
                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.15) {
                         nav.popToRoot()
                     }
@@ -81,26 +90,112 @@ struct ResultView: View {
             .padding(.bottom, 8)
         }
         .onAppear {
-            guard !sessionSaved else { return }
-            sessionSaved = true
-            let record = SessionRecord(
-                patternID: pattern.id,
-                patternName: pattern.name,
-                startedAt: startedAt,
-                elapsedSeconds: elapsedSeconds,
+            saveSessionIfNeeded()
+        }
+        .task {
+            // Brief delay so the record is committed before querying history
+            try? await Task.sleep(nanoseconds: 150_000_000)
+
+            // Read latest HealthKit values (session just ended, still current)
+            await healthKit.requestAuthorizationIfNeeded()
+            if healthKit.isAuthorized {
+                await healthKit.fetchLatestHRV()
+            }
+
+            // Past records = everything except the one we just saved
+            // allRecords is sorted newest-first, so index 0 is the current session
+            let past = Array(allRecords.dropFirst().prefix(50))
+
+            await coach.fetchFeedback(
+                patternID:       pattern.id,
+                patternName:     pattern.name,
+                durationSeconds: elapsedSeconds,
                 completedCycles: completedCycles,
-                totalCycles: totalCycles,
-                wasCompleted: isCompleted,
-                paceLabel: paceLabel
+                totalCycles:     totalCycles,
+                wasCompleted:    isCompleted,
+                paceLabel:       paceLabel,
+                heartRate:       healthKit.isAuthorized ? healthKit.currentHeartRate : nil,
+                hrv:             healthKit.isAuthorized ? healthKit.currentHRV : nil,
+                pastRecords:     past
             )
-            modelContext.insert(record)
-            AppLogger.session("Saved session: \(pattern.id), \(Int(elapsedSeconds))s, completed=\(isCompleted)")
         }
         .background(BreathingColors.background.ignoresSafeArea())
         .navigationBarBackButtonHidden(true)
     }
 
+    // MARK: - AI Coach Card
+
+    @ViewBuilder
+    private var coachCard: some View {
+        Group {
+            if coach.isLoading {
+                HStack(spacing: 6) {
+                    ProgressView()
+                        .scaleEffect(0.7)
+                        .tint(.white.opacity(0.5))
+                    Text(L.isEnglish ? "Coach thinking…" : "教練思考中…")
+                        .font(.system(size: 10))
+                        .foregroundStyle(.white.opacity(0.4))
+                }
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, 8)
+                .background(.white.opacity(0.05), in: RoundedRectangle(cornerRadius: 10))
+
+            } else if let text = coach.feedback {
+                VStack(alignment: .leading, spacing: 6) {
+                    HStack(spacing: 4) {
+                        Image(systemName: "sparkles")
+                            .font(.system(size: 10))
+                            .foregroundStyle(pattern.accentColor.opacity(0.8))
+                        Text(L.isEnglish ? "Coach" : "教練回饋")
+                            .font(.system(size: 10, weight: .semibold))
+                            .foregroundStyle(pattern.accentColor.opacity(0.8))
+                    }
+                    Text(text)
+                        .font(.system(size: 11))
+                        .foregroundStyle(.white.opacity(0.8))
+                        .fixedSize(horizontal: false, vertical: true)
+
+                    // Next pattern suggestion (if any)
+                    if let reason = coach.nextReason, !reason.isEmpty {
+                        Divider().overlay(.white.opacity(0.1))
+                        Text(reason)
+                            .font(.system(size: 10))
+                            .foregroundStyle(.white.opacity(0.45))
+                            .fixedSize(horizontal: false, vertical: true)
+                    }
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(10)
+                .background(pattern.accentColor.opacity(0.08), in: RoundedRectangle(cornerRadius: 10))
+                .overlay(
+                    RoundedRectangle(cornerRadius: 10)
+                        .strokeBorder(pattern.accentColor.opacity(0.2), lineWidth: 1)
+                )
+
+            }
+            // hasFailed → silently omit card (never show error to user)
+        }
+    }
+
     // MARK: Helpers
+
+    private func saveSessionIfNeeded() {
+        guard !sessionSaved else { return }
+        sessionSaved = true
+        let record = SessionRecord(
+            patternID:       pattern.id,
+            patternName:     pattern.name,
+            startedAt:       startedAt,
+            elapsedSeconds:  elapsedSeconds,
+            completedCycles: completedCycles,
+            totalCycles:     totalCycles,
+            wasCompleted:    isCompleted,
+            paceLabel:       paceLabel
+        )
+        modelContext.insert(record)
+        AppLogger.session("Saved session: \(pattern.id), \(Int(elapsedSeconds))s, completed=\(isCompleted)")
+    }
 
     private func statItem(value: String, label: String) -> some View {
         VStack(spacing: 3) {
@@ -120,10 +215,6 @@ struct ResultView: View {
         let mins = Int(elapsedSeconds) / 60
         let secs = Int(elapsedSeconds) % 60
         return String(format: "%d:%02d", mins, secs)
-    }
-
-    private var encouragementText: String {
-        L.encouragement(pattern.id)
     }
 }
 
